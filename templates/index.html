@@ -1,0 +1,18 @@
+{% extends "template.html" %}
+{% block conteudo %}
+    <main class="apresentacao">
+        <h1 class="apresentacao__conteudo__titulo">Poke Games</h1>
+        <p class="apresentacao__conteudo__texto">Come challenge your Pokémon knowledge with various games!</p>
+        <p class="apresentacao__conteudo__texto">Let's play!</p>
+        <div class="apresentacao__links">
+            <a class="apresentacao__links__link" href="{{ url_for('higher_lower') }}">
+                <img src="./assets/github.png">
+                High Lower Game
+            </a>
+            <a class="apresentacao__links__link" href="{{ url_for('higher_lower') }}">
+                <img src="./assets/github.png">
+                High Lower Game
+            </a>
+        </div>
+    </main>
+{% endblock %}

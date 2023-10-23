@@ -1,0 +1,133 @@
+{% extends "template.html" %}
+{% block conteudo %}
+<main class="apresentacao">
+    <h1 class="apresentacao__conteudo__titulo" id="stat">{{ stat }}</h1>
+    <h2 class="apresentacao__conteudo__titulo" id="score">Pontuação: 0</h2>
+
+    <section class="pokemon_battle">
+        <div class="pokemon" id="pkmn-1"> 
+            <h2 class="apresentacao__conteudo__titulo">{{ pkmn_1.nome }}</h2>
+            <img src="{{ pkmn_1.sprite }}" alt="Pokemon 1" data-stat="{{ pkmn_1.stat }}">
+            <h3 class="apresentacao__conteudo__titulo" id="stat-pkmn-1"></h3>
+        </div>
+        <div class="pokemon" id="pkmn-2"> 
+            <h2 class="apresentacao__conteudo__titulo">{{ pkmn_2.nome }}</h2>
+            <img src="{{ pkmn_2.sprite }}" alt="Pokemon 2" data-stat="{{ pkmn_2.stat }}">
+            <h3 class="apresentacao__conteudo__titulo" id="stat-pkmn-2"></h3>
+        </div>
+    </section>
+</main>
+
+<script>
+let score = 0;
+let lastChangedPkmnId = null;
+
+function animateStat(elementId, targetValue, stat_used) {
+    let currentValue = 0;
+    const value = (stat_used == 'total') ? 25 : 5;
+    let elementToShow= document.getElementById(elementId);
+
+        if (elementToShow) {
+            elementToShow.style.visibility = "visible";
+        } else {
+            console.error(`Element with ID ${elementId} not found.`);
+        }
+    
+    function increaseStat() {
+        if (currentValue < targetValue) {
+            currentValue += value;
+            if (currentValue > targetValue) {
+                currentValue = targetValue;
+            }
+            document.getElementById(elementId).textContent = currentValue;
+            requestAnimationFrame(increaseStat);
+        } else if (targetValue === 0) {
+            document.getElementById(elementId).textContent = '?';
+        }
+    }
+
+    increaseStat();
+}
+
+function stopAnimation() {
+    document.getElementById("stat-pkmn-1").textContent = '';
+    document.getElementById("stat-pkmn-2").textContent = '';
+}
+
+function checkWinner(selectedPkmn) {
+    
+    const statUsed = document.getElementById('stat').textContent;
+    const pkmn1Elem = document.getElementById('pkmn-1').querySelector('img');
+    const pkmn2Elem = document.getElementById('pkmn-2').querySelector('img');
+
+    const selectedStat = parseInt(selectedPkmn.getAttribute('data-stat'));
+    const otherPkmn = selectedPkmn === pkmn1Elem ? pkmn2Elem : pkmn1Elem;
+    const otherStat = parseInt(otherPkmn.getAttribute('data-stat'));
+
+    if (selectedStat >= otherStat) {
+        score += 1;
+        document.getElementById('score').textContent = "Pontuação: " + score;
+
+        animateStat("stat-pkmn-1", parseInt(pkmn1Elem.getAttribute('data-stat')), statUsed);
+        animateStat("stat-pkmn-2", parseInt(pkmn2Elem.getAttribute('data-stat')), statUsed);
+
+        let parentDivId = !lastChangedPkmnId || lastChangedPkmnId === "pkmn-2" ? "pkmn-1" : "pkmn-2";
+        lastChangedPkmnId = parentDivId; // Update the last changed Pokémon
+
+        ressortearPokemons(parentDivId);
+    } else {
+        alert("Você perdeu o jogo! Sua pontuação final foi: " + score);
+        score = 0; 
+        document.getElementById('score').textContent = "Pontuação: " + score;
+    }
+}
+
+function ressortearPokemons(lastChangedPkmnId) {
+    document.getElementById('pkmn-1').classList.add('disabled');
+    document.getElementById('pkmn-2').classList.add('disabled');
+
+    fetch(`/resort_pokemons?last_id=${lastChangedPkmnId}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log("Novo stat recebido:", data.random_stat);
+        console.log("Novo pkmn:", data.novo_pokemon.nome);
+        console.log("Novo pkmn stat:", data.novo_pokemon.stat);
+        console.log("Old pkmn:", data.old_pokemon.nome);
+        console.log("Old pkmn stat:", data.old_pokemon.stat);
+        const statDiv = document.getElementById('stat');
+        statDiv.textContent = data.random_stat;
+        const statUsed = statDiv.textContent;
+
+        stopAnimation();
+
+        setTimeout(() => {
+            document.getElementById('pkmn-1').classList.remove('disabled');
+            document.getElementById('pkmn-2').classList.remove('disabled');
+            document.getElementById("stat-pkmn-1").style.visibility = "hidden";
+            document.getElementById("stat-pkmn-2").style.visibility = "hidden";
+        }, 1000);  // Usa o valor do delay definido anteriormente
+
+        const [newPokemonDiv, oldPokemonDiv] = lastChangedPkmnId === 'pkmn-1' ? 
+        [document.getElementById('pkmn-2'), document.getElementById('pkmn-1')] : 
+        [document.getElementById('pkmn-1'), document.getElementById('pkmn-2')];
+
+        // Update the Pokémon based on the div ID
+        newPokemonDiv.querySelector('h2').textContent = data.novo_pokemon.nome;
+        newPokemonDiv.querySelector('img').src = data.novo_pokemon.sprite;
+        newPokemonDiv.querySelector('img').setAttribute('data-stat', data.novo_pokemon.stat);
+
+        oldPokemonDiv.querySelector('h2').textContent = data.old_pokemon.nome;
+        oldPokemonDiv.querySelector('img').src = data.old_pokemon.sprite;
+        oldPokemonDiv.querySelector('img').setAttribute('data-stat', data.old_pokemon.stat);
+        oldPokemonDiv.querySelector('h3').textContent = 0;
+
+    });
+}
+
+document.querySelector('.pokemon_battle').addEventListener('click', function(event) {
+    if (event.target.tagName === 'IMG') {
+        checkWinner(event.target);
+    }
+});
+</script>
+{% endblock %}

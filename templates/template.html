@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Poke Game</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='reset.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+
+    <body>
+        <header class="cabecalho">
+            <nav class="cabecalho__menu">
+                <a class="cabecalho__menu__link" href="{{ url_for('index') }}">Home</a>
+                <a class="cabecalho__menu__link" href="{{ url_for('higher_lower') }}">Higher Lower Game</a>
+            </nav>
+        </header>
+
+        {% block conteudo %}{% endblock %}
+
+        <footer class="rodape">
+            <p>This website is not endorsed or affiliated with the Pokémon or Nintendo. Additionally, this site is not endorsed by Pokémon or by it's creators.</p>
+        </footer>
+    </body>
+
+</html>
