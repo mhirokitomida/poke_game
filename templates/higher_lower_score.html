@@ -1,0 +1,42 @@
+{% extends "template.html" %}
+{% block conteudo %}
+<header class="cabecalho">
+    <nav class="cabecalho__menu">
+    </nav>
+</header>
+    <main class="apresentacao">
+        <h1 class="apresentacao__conteudo__titulo">{{text}}</h1>
+        <p class="apresentacao__conteudo__texto">{{score}}</p>
+        <div class="apresentacao__links">
+            <a class="apresentacao__links__link" href="{{ url_for('reset_game') }}">
+                Try again
+            </a>            
+            <a class="apresentacao__links__link" href="{{ url_for('index') }}">
+                Home
+            </a>
+        </div>
+        {% if battle_list %}
+        <h2 class="apresentacao__conteudo__titulo">See all your correct answers below:</h2>
+        <div class="scrollable">
+            <table class="battle_table">
+                <thead class="thead-default">
+                    <tr>
+                        <th>Stat</th>
+                        <th>Pokemon 1</th>
+                        <th>Pokemon 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for battle in battle_list %}
+                    <tr>
+                        <td>{{ battle['stat'] }}</td>
+                        <td>{{ battle['nome1'] }} (stat: {{ battle['stat1'] }})</td>
+                        <td>{{ battle['nome2'] }} (stat: {{ battle['stat2'] }})</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </main>
+{% endblock %}

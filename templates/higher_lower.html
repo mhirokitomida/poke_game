@@ -1,8 +1,15 @@
 {% extends "template.html" %}
 {% block conteudo %}
+<header class="cabecalho">
+    <nav class="cabecalho__menu">
+        <a class="cabecalho__menu__link" href="{{ url_for('index') }}">Home</a>
+        <p class="cabecalho__menu__link">Higher Lower Game</p>
+    </nav>
+</header>
 <main class="apresentacao">
-    <h1 class="apresentacao__conteudo__titulo" id="stat">{{ stat }}</h1>
-    <h2 class="apresentacao__conteudo__titulo" id="score">Pontuação: 0</h2>
+    <h1 class="apresentacao__conteudo__titulo" id="stat">Stat: {{ stat }}</h1>
+    <h2 class="apresentacao__conteudo__titulo" id="score">Score: 0</h2>
+    <h2 class="apresentacao__conteudo__titulo" id="score">High Score: {{high_score}}</h2>
 
     <section class="pokemon_battle">
         <div class="pokemon" id="pkmn-1"> 
@@ -16,11 +23,48 @@
             <h3 class="apresentacao__conteudo__titulo" id="stat-pkmn-2"></h3>
         </div>
     </section>
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to exit? You'll lose your current progress!</p>
+            <button class="confirmation_button" id="confirmYes">Yes</button>
+            <button class="confirmation_button" id="confirmNo">No</button>
+        </div>
+    </div>
 </main>
 
 <script>
 let score = 0;
 let lastChangedPkmnId = null;
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    let showUnloadAlert = true;
+
+    const links = document.querySelectorAll('a');
+    const confirmModal = document.getElementById('confirmModal');
+    const confirmYes = document.getElementById('confirmYes');
+    const confirmNo = document.getElementById('confirmNo');
+    let currentLink = null;
+
+    for(let link of links) {
+        link.addEventListener('click', function(event) {
+            if (showUnloadAlert) {
+                event.preventDefault();
+                currentLink = link.getAttribute('href');
+                confirmModal.style.display = 'block';
+            }
+        });
+    }
+
+    confirmYes.addEventListener('click', function() {
+        window.location.href = currentLink;
+    });
+
+    confirmNo.addEventListener('click', function() {
+        confirmModal.style.display = 'none';
+        currentLink = null;
+    });
+});
 
 function animateStat(elementId, targetValue, stat_used) {
     let currentValue = 0;
@@ -54,6 +98,23 @@ function stopAnimation() {
     document.getElementById("stat-pkmn-2").textContent = '';
 }
 
+function postToURL(url, data) {
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = url;
+
+    for (var key in data) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = data[key];
+        form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
 function checkWinner(selectedPkmn) {
     
     const statUsed = document.getElementById('stat').textContent;
@@ -66,19 +127,24 @@ function checkWinner(selectedPkmn) {
 
     if (selectedStat >= otherStat) {
         score += 1;
-        document.getElementById('score').textContent = "Pontuação: " + score;
+        document.getElementById('score').textContent = "Score: " + score;
 
         animateStat("stat-pkmn-1", parseInt(pkmn1Elem.getAttribute('data-stat')), statUsed);
         animateStat("stat-pkmn-2", parseInt(pkmn2Elem.getAttribute('data-stat')), statUsed);
 
-        let parentDivId = !lastChangedPkmnId || lastChangedPkmnId === "pkmn-2" ? "pkmn-1" : "pkmn-2";
-        lastChangedPkmnId = parentDivId; // Update the last changed Pokémon
+        let parentDivId;
+        if (!lastChangedPkmnId) {
+            parentDivId = selectedPkmn === pkmn1Elem ? "pkmn-1" : "pkmn-2";
+        } else {
+            parentDivId = lastChangedPkmnId === "pkmn-1" ? "pkmn-2" : "pkmn-1";
+        }
+        lastChangedPkmnId = parentDivId; 
 
         ressortearPokemons(parentDivId);
     } else {
-        alert("Você perdeu o jogo! Sua pontuação final foi: " + score);
         score = 0; 
         document.getElementById('score').textContent = "Pontuação: " + score;
+        postToURL("/higher_lower", { game_end_arg: "end" });
     }
 }
 
@@ -89,37 +155,38 @@ function ressortearPokemons(lastChangedPkmnId) {
     fetch(`/resort_pokemons?last_id=${lastChangedPkmnId}`)
     .then(response => response.json())
     .then(data => {
-        console.log("Novo stat recebido:", data.random_stat);
-        console.log("Novo pkmn:", data.novo_pokemon.nome);
-        console.log("Novo pkmn stat:", data.novo_pokemon.stat);
-        console.log("Old pkmn:", data.old_pokemon.nome);
-        console.log("Old pkmn stat:", data.old_pokemon.stat);
-        const statDiv = document.getElementById('stat');
-        statDiv.textContent = data.random_stat;
-        const statUsed = statDiv.textContent;
+        if (data.game_end == 'True') {
+            setTimeout(() => {
+                postToURL("/higher_lower", { game_end_arg: "end_full" });
+            }, 1000);
+        }
+        else{
+            const statDiv = document.getElementById('stat');
+            statDiv.textContent = data.random_stat;
+            const statUsed = statDiv.textContent;
+            stopAnimation();
 
-        stopAnimation();
+            setTimeout(() => {
+                document.getElementById('pkmn-1').classList.remove('disabled');
+                document.getElementById('pkmn-2').classList.remove('disabled');
+                document.getElementById("stat-pkmn-1").style.visibility = "hidden";
+                document.getElementById("stat-pkmn-2").style.visibility = "hidden";
+            }, 1000);  // Usa o valor do delay definido anteriormente
 
-        setTimeout(() => {
-            document.getElementById('pkmn-1').classList.remove('disabled');
-            document.getElementById('pkmn-2').classList.remove('disabled');
-            document.getElementById("stat-pkmn-1").style.visibility = "hidden";
-            document.getElementById("stat-pkmn-2").style.visibility = "hidden";
-        }, 1000);  // Usa o valor do delay definido anteriormente
+            const [newPokemonDiv, oldPokemonDiv] = lastChangedPkmnId === 'pkmn-1' ? 
+            [document.getElementById('pkmn-2'), document.getElementById('pkmn-1')] : 
+            [document.getElementById('pkmn-1'), document.getElementById('pkmn-2')];
 
-        const [newPokemonDiv, oldPokemonDiv] = lastChangedPkmnId === 'pkmn-1' ? 
-        [document.getElementById('pkmn-2'), document.getElementById('pkmn-1')] : 
-        [document.getElementById('pkmn-1'), document.getElementById('pkmn-2')];
+            // Update the Pokémon based on the div ID
+            newPokemonDiv.querySelector('h2').textContent = data.novo_pokemon.nome;
+            newPokemonDiv.querySelector('img').src = data.novo_pokemon.sprite;
+            newPokemonDiv.querySelector('img').setAttribute('data-stat', data.novo_pokemon.stat);
 
-        // Update the Pokémon based on the div ID
-        newPokemonDiv.querySelector('h2').textContent = data.novo_pokemon.nome;
-        newPokemonDiv.querySelector('img').src = data.novo_pokemon.sprite;
-        newPokemonDiv.querySelector('img').setAttribute('data-stat', data.novo_pokemon.stat);
-
-        oldPokemonDiv.querySelector('h2').textContent = data.old_pokemon.nome;
-        oldPokemonDiv.querySelector('img').src = data.old_pokemon.sprite;
-        oldPokemonDiv.querySelector('img').setAttribute('data-stat', data.old_pokemon.stat);
-        oldPokemonDiv.querySelector('h3').textContent = 0;
+            oldPokemonDiv.querySelector('h2').textContent = data.old_pokemon.nome;
+            oldPokemonDiv.querySelector('img').src = data.old_pokemon.sprite;
+            oldPokemonDiv.querySelector('img').setAttribute('data-stat', data.old_pokemon.stat);
+            oldPokemonDiv.querySelector('h3').textContent = 0;
+        }
 
     });
 }

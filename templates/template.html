@@ -10,13 +10,7 @@
     </head>
 
     <body>
-        <header class="cabecalho">
-            <nav class="cabecalho__menu">
-                <a class="cabecalho__menu__link" href="{{ url_for('index') }}">Home</a>
-                <a class="cabecalho__menu__link" href="{{ url_for('higher_lower') }}">Higher Lower Game</a>
-            </nav>
-        </header>
-
+        
         {% block conteudo %}{% endblock %}
 
         <footer class="rodape">
