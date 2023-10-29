@@ -22,7 +22,9 @@ data = pd.read_csv("static/database/pokemon_database.csv", sep=",")
 
 @app.route('/')
 def index():
+    high_score = session.get('high_score', 0)
     session.clear()
+    session['high_score'] = high_score
     return render_template('index.html')
 
 @app.route('/higher_lower', methods=['GET', 'POST'])
@@ -32,12 +34,17 @@ def higher_lower():
         game_end_arg = request.form.get('game_end_arg')
 
         if game_end_arg:
-            # Processa o game_end_arg como você já fez
-            session['high_score'] = max(session['high_score'], session['score'])
+    
             if game_end_arg == 'end':
-                session['text'] = f'You correctly got right {session["score"]} Pokémons.'
-                session['score_msg'] = f'Your High score is {session["high_score"]}'
+                session['text'] = f'You correctly got right {session["score"]} of {len(data)} Pokémons ({round((session["score"]/len(data))*100, 2)}%).'
+                if session.get('score', 0) > session.get('high_score', 0):
+                    session['high_score'] = max(session['high_score'], session['score'])
+                    session['text'] = f'Congratulations, you have a new High Score: {session["high_score"]} of {len(data)} Pokémons ({round((session["score"]/len(data))*100, 2)}%).'
+                    session['score_msg'] = ""
+                else:
+                    session['score_msg'] = f'Your High score is {session["high_score"]} Pokémons ({round((session["high_score"]/len(data))*100, 2)}%)'
             elif game_end_arg == 'end_full':
+                session['high_score'] = max(session['high_score'], session['score'])
                 session['text'] = "Congratulations, you're a true Pokémon Master!"
                 session['score_msg'] = f'You correctly got right all {len(session["list_id"])} Pokémons.'
             
@@ -51,14 +58,14 @@ def higher_lower():
         battle_list = session.get('battle_list', [])
         return render_template('higher_lower_score.html', text=text, score=score, battle_list=battle_list)
 
+    high_score = session.get('high_score', 0)
     session.clear()
-    
+    session['high_score'] = high_score
+
     session['score'] = 0
     if 'list_id' not in session:
         session['list_id'] = []
-    if 'high_score' not in session:
-        session['high_score'] = 0
-       
+    
     stats = ['hp', 'attack', 'defense', 'special-attack', 'special-defense', 'speed', 'total']
     random_stat = random.choice(stats)
     
@@ -169,8 +176,9 @@ def resort_pokemons():
 
 @app.route('/reset_game', methods=['GET', 'POST'])
 def reset_game():
-    session.clear()  # Limpa todos os dados da sessão
-    session['game_end'] = True
+    high_score = session['high_score']
+    session.clear()
+    session['high_score'] = high_score
     return redirect(url_for('higher_lower'))
 
 if __name__ == '__main__':

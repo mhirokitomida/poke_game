@@ -16,6 +16,37 @@
         <footer class="rodape">
             <p>This website is not endorsed or affiliated with the Pokémon or Nintendo. Additionally, this site is not endorsed by Pokémon or by it's creators.</p>
         </footer>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            const toggleInput = document.getElementById('toggleBackground');
+
+            // Verifica o estado armazenado ao carregar a página
+            const toggleState = localStorage.getItem('toggleState');
+            if (toggleState === 'on') {
+                toggleInput.checked = true;
+                document.querySelector('.apresentacao').style.backgroundImage = 'url("/static/assets/night.jpg")';
+            } else {
+                toggleInput.checked = false;
+                document.querySelector('.apresentacao').style.backgroundImage = 'url("/static/assets/day.jpg")';
+            }
+
+            // Atualiza o localStorage quando o toggle for alterado
+            toggleInput.addEventListener('change', function() {
+                if (toggleInput.checked) {
+                    localStorage.setItem('toggleState', 'on');
+                    document.querySelector('.apresentacao').style.backgroundImage = 'url("/static/assets/night.jpg")';
+                } else {
+                    localStorage.setItem('toggleState', 'off');
+                    document.querySelector('.apresentacao').style.backgroundImage = 'url("/static/assets/day.jpg")';
+                }
+            });
+        });
+
+        </script>
+            
+            
+
     </body>
 
 </html>

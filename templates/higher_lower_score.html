@@ -2,6 +2,16 @@
 {% block conteudo %}
 <header class="cabecalho">
     <nav class="cabecalho__menu">
+        <div class = "nav_menu">
+        </div>
+        <div class = "toogle_menu">
+            <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
+            <label class="toggle-btn">
+                <input type="checkbox" id="toggleBackground">
+                <span class="slider"></span>
+            </label>
+            <img src="{{ url_for('static', filename='assets/moon.png') }}" alt="Night Mode" class="toggle_icon">
+        </div>
     </nav>
 </header>
     <main class="apresentacao">

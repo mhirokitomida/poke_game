@@ -2,14 +2,27 @@
 {% block conteudo %}
 <header class="cabecalho">
     <nav class="cabecalho__menu">
-        <a class="cabecalho__menu__link" href="{{ url_for('index') }}">Home</a>
-        <p class="cabecalho__menu__link">Higher Lower Game</p>
+        <div class = "nav_menu">
+            <a class="cabecalho__menu__link" href="{{ url_for('index') }}">Home</a>
+            <p class="cabecalho__menu__link">Higher Lower Game</p>
+        </div>
+        <div class = "toogle_menu">
+            <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
+            <label class="toggle-btn">
+                <input type="checkbox" id="toggleBackground">
+                <span class="slider"></span>
+            </label>
+            <img src="{{ url_for('static', filename='assets/moon.png') }}" alt="Night Mode" class="toggle_icon">
+        </div>
     </nav>
 </header>
+
 <main class="apresentacao">
     <h1 class="apresentacao__conteudo__titulo" id="stat">Stat: {{ stat }}</h1>
-    <h2 class="apresentacao__conteudo__titulo" id="score">Score: 0</h2>
-    <h2 class="apresentacao__conteudo__titulo" id="score">High Score: {{high_score}}</h2>
+    <div class="score-container">
+        <h2 class="apresentacao__conteudo__titulo" id="score">Score: 0</h2>
+        <h2 class="apresentacao__conteudo__titulo" id="high_score">High Score: {{high_score}}</h2>
+    </div>
 
     <section class="pokemon_battle">
         <div class="pokemon" id="pkmn-1"> 
@@ -17,6 +30,7 @@
             <img src="{{ pkmn_1.sprite }}" alt="Pokemon 1" data-stat="{{ pkmn_1.stat }}">
             <h3 class="apresentacao__conteudo__titulo" id="stat-pkmn-1"></h3>
         </div>
+        <h2 id="vs">VS</h2> 
         <div class="pokemon" id="pkmn-2"> 
             <h2 class="apresentacao__conteudo__titulo">{{ pkmn_2.nome }}</h2>
             <img src="{{ pkmn_2.sprite }}" alt="Pokemon 2" data-stat="{{ pkmn_2.stat }}">
@@ -68,34 +82,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function animateStat(elementId, targetValue, stat_used) {
     let currentValue = 0;
-    const value = (stat_used == 'total') ? 25 : 5;
-    let elementToShow= document.getElementById(elementId);
+    const value = (stat_used == 'total') ? 30 : 5;
+    let elementToShow = document.getElementById(elementId);
 
-        if (elementToShow) {
-            elementToShow.style.visibility = "visible";
-        } else {
-            console.error(`Element with ID ${elementId} not found.`);
-        }
-    
-    function increaseStat() {
-        if (currentValue < targetValue) {
-            currentValue += value;
-            if (currentValue > targetValue) {
-                currentValue = targetValue;
-            }
-            document.getElementById(elementId).textContent = currentValue;
-            requestAnimationFrame(increaseStat);
-        } else if (targetValue === 0) {
-            document.getElementById(elementId).textContent = '?';
-        }
+    if (elementToShow) {
+        elementToShow.style.visibility = "visible";
+    } else {
+        console.error(`Element with ID ${elementId} not found.`);
     }
 
-    increaseStat();
+    return new Promise((resolve) => {
+        function increaseStat() {
+            if (currentValue < targetValue) {
+                currentValue += value;
+                if (currentValue > targetValue) {
+                    currentValue = targetValue;
+                }
+                document.getElementById(elementId).textContent = currentValue;
+                requestAnimationFrame(increaseStat);
+            } else if (targetValue === 0) {
+                document.getElementById(elementId).textContent = '?';
+            } else {
+                setTimeout(() => {
+                    resolve(); 
+                }, 500);
+                
+            }
+        }
+        increaseStat();
+    });
 }
 
-function stopAnimation() {
-    document.getElementById("stat-pkmn-1").textContent = '';
-    document.getElementById("stat-pkmn-2").textContent = '';
+function userAction(isCorrect) {
+    const apresentacao = document.querySelector('.apresentacao');
+
+    if (isCorrect) {
+        apresentacao.classList.add('correct');
+        setTimeout(() => {
+            apresentacao.classList.remove('correct');
+        }, 500);
+    } else {
+        apresentacao.classList.add('wrong');
+        setTimeout(() => {
+            apresentacao.classList.remove('wrong');
+        }, 500);
+    }
 }
 
 function postToURL(url, data) {
@@ -126,11 +157,9 @@ function checkWinner(selectedPkmn) {
     const otherStat = parseInt(otherPkmn.getAttribute('data-stat'));
 
     if (selectedStat >= otherStat) {
+        userAction(true);
         score += 1;
         document.getElementById('score').textContent = "Score: " + score;
-
-        animateStat("stat-pkmn-1", parseInt(pkmn1Elem.getAttribute('data-stat')), statUsed);
-        animateStat("stat-pkmn-2", parseInt(pkmn2Elem.getAttribute('data-stat')), statUsed);
 
         let parentDivId;
         if (!lastChangedPkmnId) {
@@ -141,53 +170,69 @@ function checkWinner(selectedPkmn) {
         lastChangedPkmnId = parentDivId; 
 
         ressortearPokemons(parentDivId);
+
     } else {
+        userAction(false);
         score = 0; 
-        document.getElementById('score').textContent = "Pontuação: " + score;
-        postToURL("/higher_lower", { game_end_arg: "end" });
+        document.getElementById('pkmn-1').classList.add('disabled');
+        document.getElementById('pkmn-2').classList.add('disabled');
+        Promise.all([
+            animateStat("stat-pkmn-1", parseInt(pkmn1Elem.getAttribute('data-stat')), statUsed),
+            animateStat("stat-pkmn-2", parseInt(pkmn2Elem.getAttribute('data-stat')), statUsed)
+        ]).then(() => {
+            postToURL("/higher_lower", { game_end_arg: "end" });
+        });
     }
 }
 
 function ressortearPokemons(lastChangedPkmnId) {
     document.getElementById('pkmn-1').classList.add('disabled');
     document.getElementById('pkmn-2').classList.add('disabled');
+    const statUsed = document.getElementById('stat').textContent;
+    const pkmn1Elem = document.getElementById('pkmn-1').querySelector('img');
+    const pkmn2Elem = document.getElementById('pkmn-2').querySelector('img');
 
     fetch(`/resort_pokemons?last_id=${lastChangedPkmnId}`)
     .then(response => response.json())
     .then(data => {
         if (data.game_end == 'True') {
-            setTimeout(() => {
+            Promise.all([
+                animateStat("stat-pkmn-1", parseInt(pkmn1Elem.getAttribute('data-stat')), statUsed),
+                animateStat("stat-pkmn-2", parseInt(pkmn2Elem.getAttribute('data-stat')), statUsed)
+            ]).then(() => {
                 postToURL("/higher_lower", { game_end_arg: "end_full" });
-            }, 1000);
+            });
         }
         else{
-            const statDiv = document.getElementById('stat');
-            statDiv.textContent = data.random_stat;
-            const statUsed = statDiv.textContent;
-            stopAnimation();
+            Promise.all([
+                animateStat("stat-pkmn-1", parseInt(pkmn1Elem.getAttribute('data-stat')), statUsed),
+                animateStat("stat-pkmn-2", parseInt(pkmn2Elem.getAttribute('data-stat')), statUsed)
+            ]).then(() => {
+                const statDiv = document.getElementById('stat');
+                statDiv.textContent = data.random_stat;
+                const statUsed = statDiv.textContent;
+        
+                const [newPokemonDiv, oldPokemonDiv] = lastChangedPkmnId === 'pkmn-1' ? 
+                [document.getElementById('pkmn-2'), document.getElementById('pkmn-1')] : 
+                [document.getElementById('pkmn-1'), document.getElementById('pkmn-2')];
 
-            setTimeout(() => {
-                document.getElementById('pkmn-1').classList.remove('disabled');
-                document.getElementById('pkmn-2').classList.remove('disabled');
-                document.getElementById("stat-pkmn-1").style.visibility = "hidden";
-                document.getElementById("stat-pkmn-2").style.visibility = "hidden";
-            }, 1000);  // Usa o valor do delay definido anteriormente
+                // Update the Pokémon based on the div ID
+                newPokemonDiv.querySelector('h2').textContent = data.novo_pokemon.nome;
+                newPokemonDiv.querySelector('img').src = data.novo_pokemon.sprite;
+                newPokemonDiv.querySelector('img').setAttribute('data-stat', data.novo_pokemon.stat);
 
-            const [newPokemonDiv, oldPokemonDiv] = lastChangedPkmnId === 'pkmn-1' ? 
-            [document.getElementById('pkmn-2'), document.getElementById('pkmn-1')] : 
-            [document.getElementById('pkmn-1'), document.getElementById('pkmn-2')];
+                oldPokemonDiv.querySelector('h2').textContent = data.old_pokemon.nome;
+                oldPokemonDiv.querySelector('img').src = data.old_pokemon.sprite;
+                oldPokemonDiv.querySelector('img').setAttribute('data-stat', data.old_pokemon.stat);
 
-            // Update the Pokémon based on the div ID
-            newPokemonDiv.querySelector('h2').textContent = data.novo_pokemon.nome;
-            newPokemonDiv.querySelector('img').src = data.novo_pokemon.sprite;
-            newPokemonDiv.querySelector('img').setAttribute('data-stat', data.novo_pokemon.stat);
-
-            oldPokemonDiv.querySelector('h2').textContent = data.old_pokemon.nome;
-            oldPokemonDiv.querySelector('img').src = data.old_pokemon.sprite;
-            oldPokemonDiv.querySelector('img').setAttribute('data-stat', data.old_pokemon.stat);
-            oldPokemonDiv.querySelector('h3').textContent = 0;
+                setTimeout(() => {
+                    document.getElementById('pkmn-1').classList.remove('disabled');
+                    document.getElementById('pkmn-2').classList.remove('disabled');
+                    document.getElementById("stat-pkmn-1").style.visibility = "hidden";
+                    document.getElementById("stat-pkmn-2").style.visibility = "hidden";
+                }, 800);
+            });
         }
-
     });
 }
 
