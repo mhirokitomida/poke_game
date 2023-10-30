@@ -1,0 +1,106 @@
+{% extends "template.html" %}
+{% block conteudo %}
+    <header class="cabecalho">
+        <nav class="cabecalho__menu">
+            <div class = "nav_menu">
+                <a class="cabecalho__menu__link" href="{{ url_for('index') }}">Home</a>
+                <p class="cabecalho__menu__link">Higher Lower Game</p>
+            </div>
+            <div class = "toogle_menu">
+                <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
+                <label class="toggle-btn">
+                    <input type="checkbox" id="toggleBackground">
+                    <span class="slider"></span>
+                </label>
+                <img src="{{ url_for('static', filename='assets/moon.png') }}" alt="Night Mode" class="toggle_icon">
+            </div>
+        </nav>
+    </header>
+    <main class="apresentacao">
+        <h1 class="apresentacao__conteudo__titulo">Higher Lower Game</h1>
+        <h2 class="apresentacao__conteudo__titulo">Rules</h2>
+        <p class="apresentacao__conteudo__texto">
+            Your task is to determine which Pokémon has the superior atribute. 
+            As the game progresses, a new Pokémon will be presented to you — without any repeats. 
+            Make your choice based on the displayed atribute, which is randomly chosen from your selected settings. 
+            Both the atribute and Pokémon choices are guided by your game settings.  
+            Aim to consecutively choose correctly and see how many you get right in a row!
+        </p>
+        <div class="formularios">
+            <h2 class="apresentacao__conteudo__titulo">Settings</h2>
+            <form action="/higher_lower" method="post" id="gameForm">
+                <div class="list-container">
+                    <fieldset>
+                        <legend class = 'legend_selection'>Select the Gen's</legend>
+                        <div class="scrollable-list">
+                            <div class="item-list">
+                                <input type="checkbox" id="gen-I" name="gen[]" value="genI">
+                                <label for="gen-I">Gen I</label>
+                            </div>
+                            <div class="item-list">
+                                <input type="checkbox" id="gen-II" name="gen[]" value="genII">
+                                <label for="gen-II">Gen II</label>
+                            </div>
+                            <div class="item-list">
+                                <input type="checkbox" id="gen-III" name="gen[]" value="genIII">
+                                <label for="gen-III">Gen III</label>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                <fieldset>
+                    <legend class = 'legend_selection'>Select the Atributes</legend>
+                    <div class="scrollable-list">
+                        <div class="item-list">
+                            <input type="checkbox" id="atribute-hp" name="atributes[]" value="hp">
+                            <label for="atribute-hp">HP</label>
+                        </div>
+                        <div class="item-list">
+                            <input type="checkbox" id="atribute-attack" name="atributes[]" value="attack">
+                            <label for="atribute-attack">Attack</label>
+                        </div>
+                        <div class="item-list">
+                            <input type="checkbox" id="atribute-defense" name="atributes[]" value="defense">
+                            <label for="atribute-defense">Defense</label>
+                        </div>
+                        <div class="item-list">
+                            <input type="checkbox" id="atribute-special-attack" name="atributes[]" value="special-attack">
+                            <label for="atribute-special-attack">Sp. Attack</label>
+                        </div>
+                        <div class="item-list">
+                            <input type="checkbox" id="atribute-special-defense" name="atributes[]" value="special-defense">
+                            <label for="atribute-special-defense">Sp. Defense</label>
+                        </div>
+                        <div class="item-list">
+                            <input type="checkbox" id="atribute-speed" name="atributes[]" value="speed">
+                            <label for="atribute-speed">Speed</label>
+                        </div>
+                        <div class="item-list">
+                            <input type="checkbox" id="atribute-total" name="atributes[]" value="total">
+                            <label for="atribute-total">Total</label>
+                        </div>
+
+                    </div>
+                </fieldset>
+            </div>
+                <input id = 'submit_high_lower' type="submit" value="Play">
+            </form>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('gameForm');
+
+                form.addEventListener('submit', function(e) {
+                    const gensChecked = document.querySelectorAll('input[name="gen[]"]:checked').length;
+                    const atributesChecked = document.querySelectorAll('input[name="atributes[]"]:checked').length;
+
+                    if (gensChecked === 0 || atributesChecked === 0) {
+                        e.preventDefault(); 
+                        alert('Select one value in Gen and Atribute');
+                    }
+                });
+            });
+    </script>
+{% endblock %}

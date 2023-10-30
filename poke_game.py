@@ -17,27 +17,40 @@ def randint_exclude(start, end, exclude):
         number = random.randint(start, end - 1)
         if number not in exclude:
             return number
+        
+def clean_session():
+    session.pop('score', None)
+    session.pop('text', None)
+    session.pop('score_msg', None)
+    session.pop('battle_list', None)
+    session.pop('list_id', None)
+    session.pop('last_pkmn_1_id', None)
+    session.pop('last_pkmn_2_id', None)
 
 data = pd.read_csv("static/database/pokemon_database.csv", sep=",")
 
 @app.route('/')
 def index():
-    high_score = session.get('high_score', 0)
-    session.clear()
-    session['high_score'] = high_score
+    clean_session()
     return render_template('index.html')
+
+@app.route('/higher_lower_home', methods=['GET', 'POST'])
+def higher_lower_home():
+    return render_template('higher_lower_home.html')
 
 @app.route('/higher_lower', methods=['GET', 'POST'])
 def higher_lower():
     
     if request.method == 'POST':
         game_end_arg = request.form.get('game_end_arg')
+        if 'gen' not in session and 'atributes' not in session:
+            session['gen']  = request.form.getlist('gen[]')
+            session['atributes'] = request.form.getlist('atributes[]')
 
         if game_end_arg:
-    
             if game_end_arg == 'end':
                 session['text'] = f'You correctly got right {session["score"]} of {len(data)} Pokémons ({round((session["score"]/len(data))*100, 2)}%).'
-                if session.get('score', 0) > session.get('high_score', 0):
+                if session.get('score', 0) > session['high_score']:
                     session['high_score'] = max(session['high_score'], session['score'])
                     session['text'] = f'Congratulations, you have a new High Score: {session["high_score"]} of {len(data)} Pokémons ({round((session["score"]/len(data))*100, 2)}%).'
                     session['score_msg'] = ""
@@ -58,15 +71,14 @@ def higher_lower():
         battle_list = session.get('battle_list', [])
         return render_template('higher_lower_score.html', text=text, score=score, battle_list=battle_list)
 
-    high_score = session.get('high_score', 0)
-    session.clear()
-    session['high_score'] = high_score
+    clean_session()
 
     session['score'] = 0
+    session['high_score'] = session.get('high_score', 0)
     if 'list_id' not in session:
         session['list_id'] = []
     
-    stats = ['hp', 'attack', 'defense', 'special-attack', 'special-defense', 'speed', 'total']
+    stats = session.get('atributes', ['hp', 'attack', 'defense', 'special-attack', 'special-defense', 'speed', 'total'])
     random_stat = random.choice(stats)
     
     # Sortear o primeiro Pokémon
@@ -108,7 +120,7 @@ def higher_lower():
 def resort_pokemons():
     game_end = 'False'
     last_id = request.args.get('last_id')
-    stats = ['hp', 'attack', 'defense', 'special-attack', 'special-defense', 'speed', 'total']
+    stats = session.get('atributes', ['hp', 'attack', 'defense', 'special-attack', 'special-defense', 'speed', 'total'])
     random_stat = random.choice(stats)
 
     if len(session.get('list_id', [])) == len(data):
@@ -176,10 +188,16 @@ def resort_pokemons():
 
 @app.route('/reset_game', methods=['GET', 'POST'])
 def reset_game():
-    high_score = session['high_score']
-    session.clear()
-    session['high_score'] = high_score
+    clean_session()
     return redirect(url_for('higher_lower'))
+
+@app.route('/reset_game_full', methods=['GET', 'POST'])
+def reset_game_full():
+    clean_session()
+    session.pop('gen', None)
+    session.pop('atributes', None)
+
+    return redirect(url_for('higher_lower_home'))
 
 if __name__ == '__main__':
     app.run(debug=True)
