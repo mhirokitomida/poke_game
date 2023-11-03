@@ -283,7 +283,7 @@ input:checked + .slider:before {
     justify-content: space-between;
     gap: 10rem; 
     align-items: flex-start; 
-    margin-top: 3rem;
+    margin: 3rem 0;
 }
 
 fieldset {
@@ -338,7 +338,7 @@ input[type="checkbox"]:checked + label::before {
     font-size: 2rem;  
 }
 
-#submit_high_lower{
+#submit_higher_lower{
     color: var(--cor-amarelo);
     background-color: rgb(204, 204, 204);
     cursor: pointer; 
@@ -347,6 +347,11 @@ input[type="checkbox"]:checked + label::before {
     border: 0.2rem solid var(--cor-azul);
 }
 
-#submit_high_lower:hover {
+#submit_higher_lower:hover {
     background-color: rgba(204, 204, 204, 0.8); 
+}
+
+#global-filter{
+    margin: 5rem 0;
+    font-size: 3rem;
 }

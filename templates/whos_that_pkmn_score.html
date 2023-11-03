@@ -18,10 +18,10 @@
         <h1 class="apresentacao__conteudo__titulo">{{text}}</h1>
         <p class="apresentacao__conteudo__texto">{{score}}</p>
         <div class="apresentacao__links">
-            <a class="apresentacao__links__link" href="{{ url_for('reset_game_hl') }}">
+            <a class="apresentacao__links__link" href="{{ url_for('reset_game_wtp') }}">
                 Try again
             </a>  
-            <a class="apresentacao__links__link" href="{{ url_for('reset_game_full_hl') }}">
+            <a class="apresentacao__links__link" href="{{ url_for('reset_game_full_wtp') }}">
                 Change Settings
             </a>            
             <a class="apresentacao__links__link" href="{{ url_for('index') }}">
@@ -34,17 +34,15 @@
             <table class="battle_table">
                 <thead class="thead-default">
                     <tr>
-                        <th>Stat</th>
-                        <th>Pokemon 1</th>
-                        <th>Pokemon 2</th>
+                        <th>Pokemon</th>
+                        <th>Generation</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for battle in pkmn_list %}
+                    {% for pkmn in pkmn_list %}
                     <tr>
-                        <td>{{ battle['stat'] }}</td>
-                        <td>{{ battle['nome1'] }} (stat: {{ battle['stat1'] }})</td>
-                        <td>{{ battle['nome2'] }} (stat: {{ battle['stat2'] }})</td>
+                        <td>{{ pkmn['nome'] }}</td>
+                        <td>{{ pkmn['generation'] }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

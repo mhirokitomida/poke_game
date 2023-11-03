@@ -5,6 +5,7 @@
         <div class = "nav_menu">
             <a class="cabecalho__menu__link" href="{{ url_for('index') }}">Home</a>
             <p class="cabecalho__menu__link">Higher Lower Game</p>
+            <a class="cabecalho__menu__link" href="{{ url_for('whos_that_pkmn_home') }}">Who's that Pokémon</a>
         </div>
         <div class = "toogle_menu">
             <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
@@ -21,14 +22,14 @@
     <h1 class="apresentacao__conteudo__titulo" id="stat">Stat: {{ stat }}</h1>
     <div class="score-container">
         <h2 class="apresentacao__conteudo__titulo" id="score">Score: 0</h2>
-        <h2 class="apresentacao__conteudo__titulo" id="high_score">High Score: {{high_score}}</h2>
+        <h2 class="apresentacao__conteudo__titulo" id="high_score">High Score: {{high_score_hl}}</h2>
     </div>
 
     <section class="pokemon_battle">
-        <div class="pokemon" id="pkmn-1"> 
-            <h2 class="apresentacao__conteudo__titulo">{{ pkmn_1.nome }}</h2>
-            <img src="{{ pkmn_1.sprite }}" alt="Pokemon 1" data-stat="{{ pkmn_1.stat }}">
-            <h3 class="apresentacao__conteudo__titulo" id="stat-pkmn-1"></h3>
+        <div class="pokemon" id="pkmn"> 
+            <h2 class="apresentacao__conteudo__titulo">{{ pkmn.nome }}</h2>
+            <img src="{{ pkmn.sprite }}" alt="Pokemon 1" data-stat="{{ pkmn.stat }}">
+            <h3 class="apresentacao__conteudo__titulo" id="stat-pkmn"></h3>
         </div>
         <h2 id="vs">VS</h2> 
         <div class="pokemon" id="pkmn-2"> 
@@ -149,11 +150,11 @@ function postToURL(url, data) {
 function checkWinner(selectedPkmn) {
     
     const statUsed = document.getElementById('stat').textContent;
-    const pkmn1Elem = document.getElementById('pkmn-1').querySelector('img');
+    const pkmnElem = document.getElementById('pkmn').querySelector('img');
     const pkmn2Elem = document.getElementById('pkmn-2').querySelector('img');
 
     const selectedStat = parseInt(selectedPkmn.getAttribute('data-stat'));
-    const otherPkmn = selectedPkmn === pkmn1Elem ? pkmn2Elem : pkmn1Elem;
+    const otherPkmn = selectedPkmn === pkmnElem ? pkmn2Elem : pkmnElem;
     const otherStat = parseInt(otherPkmn.getAttribute('data-stat'));
 
     if (selectedStat >= otherStat) {
@@ -163,9 +164,9 @@ function checkWinner(selectedPkmn) {
 
         let parentDivId;
         if (!lastChangedPkmnId) {
-            parentDivId = selectedPkmn === pkmn1Elem ? "pkmn-1" : "pkmn-2";
+            parentDivId = selectedPkmn === pkmnElem ? "pkmn" : "pkmn-2";
         } else {
-            parentDivId = lastChangedPkmnId === "pkmn-1" ? "pkmn-2" : "pkmn-1";
+            parentDivId = lastChangedPkmnId === "pkmn" ? "pkmn-2" : "pkmn";
         }
         lastChangedPkmnId = parentDivId; 
 
@@ -174,10 +175,10 @@ function checkWinner(selectedPkmn) {
     } else {
         userAction(false);
         score = 0; 
-        document.getElementById('pkmn-1').classList.add('disabled');
+        document.getElementById('pkmn').classList.add('disabled');
         document.getElementById('pkmn-2').classList.add('disabled');
         Promise.all([
-            animateStat("stat-pkmn-1", parseInt(pkmn1Elem.getAttribute('data-stat')), statUsed),
+            animateStat("stat-pkmn", parseInt(pkmnElem.getAttribute('data-stat')), statUsed),
             animateStat("stat-pkmn-2", parseInt(pkmn2Elem.getAttribute('data-stat')), statUsed)
         ]).then(() => {
             postToURL("/higher_lower", { game_end_arg: "end" });
@@ -186,18 +187,18 @@ function checkWinner(selectedPkmn) {
 }
 
 function ressortearPokemons(lastChangedPkmnId) {
-    document.getElementById('pkmn-1').classList.add('disabled');
+    document.getElementById('pkmn').classList.add('disabled');
     document.getElementById('pkmn-2').classList.add('disabled');
     const statUsed = document.getElementById('stat').textContent;
-    const pkmn1Elem = document.getElementById('pkmn-1').querySelector('img');
+    const pkmnElem = document.getElementById('pkmn').querySelector('img');
     const pkmn2Elem = document.getElementById('pkmn-2').querySelector('img');
 
-    fetch(`/resort_pokemons?last_id=${lastChangedPkmnId}`)
+    fetch(`/resort_pokemons_hl?last_id=${lastChangedPkmnId}`)
     .then(response => response.json())
     .then(data => {
         if (data.game_end == 'True') {
             Promise.all([
-                animateStat("stat-pkmn-1", parseInt(pkmn1Elem.getAttribute('data-stat')), statUsed),
+                animateStat("stat-pkmn", parseInt(pkmnElem.getAttribute('data-stat')), statUsed),
                 animateStat("stat-pkmn-2", parseInt(pkmn2Elem.getAttribute('data-stat')), statUsed)
             ]).then(() => {
                 postToURL("/higher_lower", { game_end_arg: "end_full" });
@@ -205,16 +206,16 @@ function ressortearPokemons(lastChangedPkmnId) {
         }
         else{
             Promise.all([
-                animateStat("stat-pkmn-1", parseInt(pkmn1Elem.getAttribute('data-stat')), statUsed),
+                animateStat("stat-pkmn", parseInt(pkmnElem.getAttribute('data-stat')), statUsed),
                 animateStat("stat-pkmn-2", parseInt(pkmn2Elem.getAttribute('data-stat')), statUsed)
             ]).then(() => {
                 const statDiv = document.getElementById('stat');
                 statDiv.textContent = data.random_stat;
                 const statUsed = statDiv.textContent;
         
-                const [newPokemonDiv, oldPokemonDiv] = lastChangedPkmnId === 'pkmn-1' ? 
-                [document.getElementById('pkmn-2'), document.getElementById('pkmn-1')] : 
-                [document.getElementById('pkmn-1'), document.getElementById('pkmn-2')];
+                const [newPokemonDiv, oldPokemonDiv] = lastChangedPkmnId === 'pkmn' ? 
+                [document.getElementById('pkmn-2'), document.getElementById('pkmn')] : 
+                [document.getElementById('pkmn'), document.getElementById('pkmn-2')];
 
                 // Update the Pokémon based on the div ID
                 newPokemonDiv.querySelector('h2').textContent = data.novo_pokemon.nome;
@@ -226,9 +227,9 @@ function ressortearPokemons(lastChangedPkmnId) {
                 oldPokemonDiv.querySelector('img').setAttribute('data-stat', data.old_pokemon.stat);
 
                 setTimeout(() => {
-                    document.getElementById('pkmn-1').classList.remove('disabled');
+                    document.getElementById('pkmn').classList.remove('disabled');
                     document.getElementById('pkmn-2').classList.remove('disabled');
-                    document.getElementById("stat-pkmn-1").style.visibility = "hidden";
+                    document.getElementById("stat-pkmn").style.visibility = "hidden";
                     document.getElementById("stat-pkmn-2").style.visibility = "hidden";
                 }, 800);
             });

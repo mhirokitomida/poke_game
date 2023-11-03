@@ -5,6 +5,7 @@
             <div class = "nav_menu">
                 <p class="cabecalho__menu__link">Home</p>
                 <a class="cabecalho__menu__link" href="{{ url_for('higher_lower_home') }}">Higher Lower Game</a>
+                <a class="cabecalho__menu__link" href="{{ url_for('whos_that_pkmn_home') }}">Who's that Pokémon</a>
             </div>
             <div class = "toogle_menu">
                 <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
@@ -24,8 +25,8 @@
             <a class="apresentacao__links__link" href="{{ url_for('higher_lower_home') }}">
                 High Lower Game
             </a>
-            <a class="apresentacao__links__link" href="{{ url_for('higher_lower_home') }}">
-                High Lower Game
+            <a class="apresentacao__links__link" href="{{ url_for('whos_that_pkmn_home') }}">
+                Who's that Pokémon
             </a>
         </div>
     </main>
