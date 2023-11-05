@@ -4,8 +4,8 @@
         <nav class="cabecalho__menu">
             <div class = "nav_menu">
                 <p class="cabecalho__menu__link">Home</p>
-                <a class="cabecalho__menu__link" href="{{ url_for('higher_lower_home') }}">Higher Lower Game</a>
-                <a class="cabecalho__menu__link" href="{{ url_for('whos_that_pkmn_home') }}">Who's that Pokémon</a>
+                <a class="cabecalho__menu__link" href="{{ url_for('higher_lower.home') }}">Higher Lower Game</a>
+                <a class="cabecalho__menu__link" href="{{ url_for('whos_that_pkmn.home') }}">Who's that Pokémon</a>
             </div>
             <div class = "toogle_menu">
                 <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
@@ -19,13 +19,13 @@
     </header>
     <main class="apresentacao">
         <h1 class="apresentacao__conteudo__titulo">Poke Games</h1>
-        <p class="apresentacao__conteudo__texto">Come challenge your Pokémon knowledge with various games!</p>
+        <p class="apresentacao__conteudo__texto">Come challenge your Pokémon knowledge with games!</p>
         <p class="apresentacao__conteudo__texto">Let's play!</p>
         <div class="apresentacao__links">
-            <a class="apresentacao__links__link" href="{{ url_for('higher_lower_home') }}">
+            <a class="apresentacao__links__link" href="{{ url_for('higher_lower.home') }}">
                 High Lower Game
             </a>
-            <a class="apresentacao__links__link" href="{{ url_for('whos_that_pkmn_home') }}">
+            <a class="apresentacao__links__link" href="{{ url_for('whos_that_pkmn.home') }}">
                 Who's that Pokémon
             </a>
         </div>

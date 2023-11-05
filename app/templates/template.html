@@ -43,11 +43,43 @@
             });
         });
 
-            
+        function userAction(isCorrect) {
+            const apresentacao = document.querySelector('.apresentacao');
+
+            if (isCorrect) {
+                console.log("Acertou!");
+                apresentacao.classList.add('correct');
+                setTimeout(() => {
+                    apresentacao.classList.remove('correct');
+                }, 500);
+            } else {
+                console.log("Errou!");
+                apresentacao.classList.add('wrong');
+                setTimeout(() => {
+                    apresentacao.classList.remove('wrong');
+                }, 500);
+            }
+        }
+
+        function postToURL(url, data) {
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+
+            for (var key in data) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = data[key];
+                form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+  
         </script>
             
-            
-
     </body>
 
 </html>

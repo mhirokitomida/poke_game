@@ -18,13 +18,13 @@
         <h1 class="apresentacao__conteudo__titulo">{{text}}</h1>
         <p class="apresentacao__conteudo__texto">{{score}}</p>
         <div class="apresentacao__links">
-            <a class="apresentacao__links__link" href="{{ url_for('reset_game_wtp') }}">
+            <a class="apresentacao__links__link" href="#" onclick="postToURL('/reset_game', { reset_type: 'reset_wtp' })">
                 Try again
             </a>  
-            <a class="apresentacao__links__link" href="{{ url_for('reset_game_full_wtp') }}">
+            <a class="apresentacao__links__link" href="#" onclick="postToURL('/reset_game', { reset_type: 'reset_wtp_all' })">
                 Change Settings
             </a>            
-            <a class="apresentacao__links__link" href="{{ url_for('index') }}">
+            <a class="apresentacao__links__link" href="{{ url_for('home.index') }}">
                 Home
             </a>
         </div>

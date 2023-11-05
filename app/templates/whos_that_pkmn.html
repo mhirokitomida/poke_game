@@ -1,0 +1,275 @@
+{% extends "template.html" %}
+{% block conteudo %}
+<header class="cabecalho">
+    <nav class="cabecalho__menu">
+        <div class = "nav_menu">
+            <a class="cabecalho__menu__link" href="{{ url_for('home.index') }}">Home</a>
+            <a class="cabecalho__menu__link" href="{{ url_for('higher_lower.home') }}">Higher Lower Game</a>
+            <p class="cabecalho__menu__link">Who's that Pokémon</p>
+        </div>
+        <div class = "toogle_menu">
+            <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
+            <label class="toggle-btn">
+                <input type="checkbox" id="toggleBackground">
+                <span class="slider"></span>
+            </label>
+            <img src="{{ url_for('static', filename='assets/moon.png') }}" alt="Night Mode" class="toggle_icon">
+        </div>
+    </nav>
+</header>
+
+<main class="apresentacao">
+    <h1 class="apresentacao__conteudo__titulo">Who's that Pókemon? </h1>
+    <div class="score-container">
+        <h2 class="apresentacao__conteudo__texto" id="score">Score: 0</h2>
+        <h2 class="apresentacao__conteudo__texto" id="high_score">High Score: {{high_score_wtp}}</h2>
+    </div>
+
+    <section class="pokemon_v2" id="pkmn">
+        <div class = 'guess_pkmn'> 
+            <h2 class="apresentacao__conteudo__texto" id="nome_pkmn">?</h2>
+            <img src="{{ pkmn.shadow_sprite }}" alt="Pokemon" name="{{ pkmn.nome }}" id="pokemonImage" sprite="{{pkmn.sprite}}">
+        </div>
+        <div class="formularios">
+            <form action="/whos_that_pkmn" method="post" id="gameForm">
+                <div class = 'guess_panel'>
+                    <div class = 'guess_pkmn_list'>
+                        <h2> Choose One Pokemon from the list below</h2>
+                        <select id="generation-filter">
+                            <option value="All">All Generations</option>
+                            {% for gen in generations_dict.keys() %}
+                            <option value="{{ gen }}">{{ gen }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="text" id="global-filter" placeholder="Filter Pokémon Name">
+                        <div class="scrollable-list" id="pokemon-list">
+                            <!-- Outros itens serão preenchidos por JavaScript -->
+                        </div>
+                        
+                        <div class="submit-container">
+                            <input id='submit_higher_lower' type="submit" value="Guess">
+                        </div>
+                    </div>
+                 
+                </div>
+            </form>
+        </div>
+    </section>
+    
+
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to exit? You'll lose your current progress!</p>
+            <button class="confirmation_button" id="confirmYes">Yes</button>
+            <button class="confirmation_button" id="confirmNo">No</button>
+        </div>
+    </div>
+</main>
+
+<script type="text/javascript">
+let score = 0;
+generations_dict = {{ generations_dict | tojson | safe }};
+
+document.addEventListener('DOMContentLoaded', function() {
+            let showUnloadAlert = true;
+
+            const links = document.querySelectorAll('a');
+            const confirmModal = document.getElementById('confirmModal');
+            const confirmYes = document.getElementById('confirmYes');
+            const confirmNo = document.getElementById('confirmNo');
+            let currentLink = null;
+
+            for(let link of links) {
+                link.addEventListener('click', function(event) {
+                    if (showUnloadAlert) {
+                        event.preventDefault();
+                        currentLink = link.getAttribute('href');
+                        confirmModal.style.display = 'block';
+                    }
+                });
+            }
+
+            confirmYes.addEventListener('click', function() {
+                window.location.href = currentLink;
+            });
+
+            confirmNo.addEventListener('click', function() {
+                confirmModal.style.display = 'none';
+                currentLink = null;
+            });
+        });
+
+// Quando o filtro de geração muda, atualiza a lista com ambos os filtros
+document.getElementById('generation-filter').addEventListener('change', function() {
+    const genFilter = this.value;
+    const textFilter = document.getElementById('global-filter').value;
+    updateList(textFilter, genFilter);
+});
+
+// Quando o filtro de texto muda, atualiza a lista com ambos os filtros
+document.getElementById('global-filter').addEventListener('input', function() {
+    const textFilter = this.value;
+    const genFilter = document.getElementById('generation-filter').value;
+    updateList(textFilter, genFilter);
+});
+
+// Inicializa a lista no carregamento da página
+document.addEventListener('DOMContentLoaded', () => {
+    const textFilter = document.getElementById('global-filter').value;
+    const genFilter = document.getElementById('generation-filter').value;
+    updateList(textFilter, genFilter);
+});
+
+// Inicializa a lista no carregamento da página
+document.addEventListener('DOMContentLoaded', () => {
+    initializeLists(); // Chama a função para inicializar as listas
+});
+
+// Lógica para submissão do formulário
+document.getElementById('gameForm').onsubmit = function(event) {
+    event.preventDefault();
+
+    var selectedPokemon = document.querySelector('input[name="selected_pokemon"]:checked');
+    var filterInput = document.getElementById('global-filter');
+    if(selectedPokemon){
+        filterInput.value = '';
+        updateList();
+        checkWinner(selectedPokemon);
+    } else {
+        alert('No Pokémon selected');
+        event.preventDefault(); // Impede o envio do formulário se nenhum Pokémon estiver selecionado
+    }
+};
+
+// Função para filtrar todas as listas baseada no valor do filtro global
+function filterAllLists() {
+    var filterValue = document.getElementById('global-filter').value.toLowerCase();
+    var listItems = document.querySelectorAll('.scrollable-list .pokemon-list');
+
+    listItems.forEach(function(item) {
+        var text = item.textContent.toLowerCase();
+        if (text.includes(filterValue)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+function updateList(textFilter = '', genFilter = 'All') {
+    const listId = 'pokemon-list';
+    const ul = document.getElementById(listId);
+    if (!ul) return; // Encerra a função se o elemento da lista não for encontrado
+
+    ul.innerHTML = ''; // Limpa a lista atual
+
+    // Filtra primeiro por geração, se necessário
+    let filteredGenerations = genFilter === 'All' ? Object.values(generations_dict) : [generations_dict[genFilter]];
+
+    // Combina todos os arrays de nomes em um único array e filtra pelo texto
+    filteredGenerations.flat()
+        .filter(name => name.toLowerCase().includes(textFilter.toLowerCase()))
+        .forEach(name => {
+            // Criação e adição de elementos à lista como antes
+            const div = document.createElement('div');
+            div.className = 'custom-radio';
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.id = name;
+            input.name = 'selected_pokemon';
+            input.value = name;
+            const label = document.createElement('label');
+            label.htmlFor = name;
+            label.textContent = name;
+
+            div.appendChild(input);
+            div.appendChild(label);
+            ul.appendChild(div);
+        });
+}
+
+// Função para inicializar as listas na primeira vez que a página carrega
+// Função para inicializar as listas na primeira vez que a página carrega
+function initializeLists() {
+    updateList(); // Inicializa com todos os itens
+    // Configura o filtro de geração
+    document.getElementById('generation-filter').addEventListener('change', function() {
+        const gen = this.value;
+        const globalFilter = document.getElementById('global-filter').value;
+        updateList(globalFilter, gen); // Atualiza a lista com o filtro global e de geração
+    });
+}
+
+function switchPokemonSprite(newSpriteSrc) {
+    var pokemonSprite = document.getElementById('pokemonImage');
+    pokemonSprite.src = newSpriteSrc;
+    setTimeout(() => {
+                       console.log('Switching sprite...'); 
+                     }, 500);
+}
+
+function checkWinner(pkmnElem) {
+    
+    var selectedPkmn = pkmnElem.value;
+    var pokemonImage = document.getElementById('pokemonImage');
+    var pokemonName = pokemonImage.getAttribute('name');
+    var pokemonSprite = pokemonImage.getAttribute('sprite');
+
+    console.log("novo sprite: ", pokemonSprite)
+    
+    if (selectedPkmn == pokemonName) {
+        userAction(true);
+        score += 1;
+        document.getElementById('score').textContent = "Score: " + score;
+
+        Promise.all([
+            switchPokemonSprite(pokemonSprite)
+        ]).then(() => {
+            document.getElementById('nome_pkmn').textContent = pokemonName;
+            setTimeout(() => {
+                ressortearPokemons();
+            }, 1500);
+        });
+
+    } else {
+        userAction(false);
+        score = 0; 
+        Promise.all([
+            switchPokemonSprite(pokemonSprite)
+        ]).then(() => {
+            document.getElementById('nome_pkmn').textContent = pokemonName;
+            setTimeout(() => {
+                postToURL("/whos_that_pkmn", { game_end_arg: "end" });
+            }, 1500);
+        });
+    }
+}
+
+function ressortearPokemons() {
+    fetch(`/resort_pokemons_wtp`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.game_end == 'True') {
+            Promise.all([
+                switchPokemonSprite(pokemonSprite)
+            ]).then(() => {
+                document.getElementById('nome_pkmn').textContent = data.nome;
+                postToURL("/whos_that_pkmn", { game_end_arg: "end_full" });
+            });
+        }
+        else{
+    
+            const newPokemonDiv = document.getElementById('pkmn');
+
+            // Update the Pokémon based on the div ID
+            document.getElementById('nome_pkmn').textContent = '?';
+            newPokemonDiv.querySelector('img').src = data.shadow_sprite;
+            newPokemonDiv.querySelector('img').setAttribute('name', data.nome);
+            newPokemonDiv.querySelector('img').setAttribute('sprite', data.sprite);
+
+
+        }
+    });
+}
+</script>
+{% endblock %}
