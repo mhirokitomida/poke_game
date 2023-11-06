@@ -1,7 +1,7 @@
 {% extends "template.html" %}
-{% block conteudo %}
-<header class="cabecalho">
-    <nav class="cabecalho__menu">
+{% block content%}
+<header class="header">
+    <nav class="header_menu">
         <div class = "nav_menu">
         </div>
         <div class = "toogle_menu">
@@ -14,22 +14,22 @@
         </div>
     </nav>
 </header>
-    <main class="apresentacao">
-        <h1 class="apresentacao__conteudo__titulo">{{text}}</h1>
-        <p class="apresentacao__conteudo__texto">{{score}}</p>
-        <div class="apresentacao__links">
-            <a class="apresentacao__links__link" href="#" onclick="postToURL('/reset_game', { reset_type: 'reset_hl' })">
+    <main class="main_content">
+        <h1 class="main_content_title">{{text}}</h1>
+        <p class="main_content_text">{{score}}</p>
+        <div class="main_content_links">
+            <a class="main_content_links_item" href="#" onclick="postToURL('/reset_game', { reset_type: 'reset_hl' })">
                 Try again
             </a>  
-            <a class="apresentacao__links__link" href="#" onclick="postToURL('/reset_game', { reset_type: 'reset_hl_all' })">
+            <a class="main_content_links_item" href="#" onclick="postToURL('/reset_game', { reset_type: 'reset_hl_all' })">
                 Change Settings
             </a>            
-            <a class="apresentacao__links__link" href="{{ url_for('home.index') }}">
+            <a class="main_content_links_item" href="{{ url_for('home.index') }}">
                 Home
             </a>
         </div>
         {% if pkmn_list %}
-        <h2 class="apresentacao__conteudo__titulo">See all your correct answers below:</h2>
+        <h2 class="main_content_title">See all your correct answers below:</h2>
         <div class="scrollable">
             <table class="battle_table">
                 <thead class="thead-default">

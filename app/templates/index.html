@@ -1,11 +1,11 @@
 {% extends "template.html" %}
-{% block conteudo %}
-    <header class="cabecalho">
-        <nav class="cabecalho__menu">
+{% block content%}
+    <header class="header">
+        <nav class="header_menu">
             <div class = "nav_menu">
-                <p class="cabecalho__menu__link">Home</p>
-                <a class="cabecalho__menu__link" href="{{ url_for('higher_lower.home') }}">Higher Lower Game</a>
-                <a class="cabecalho__menu__link" href="{{ url_for('whos_that_pkmn.home') }}">Who's that Pokémon</a>
+                <p class="header_menu_link">Home</p>
+                <a class="header_menu_link" href="{{ url_for('higher_lower.home') }}">Higher Lower Game</a>
+                <a class="header_menu_link" href="{{ url_for('whos_that_pkmn.home') }}">Who's that Pokémon</a>
             </div>
             <div class = "toogle_menu">
                 <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
@@ -17,15 +17,15 @@
             </div>
         </nav>
     </header>
-    <main class="apresentacao">
-        <h1 class="apresentacao__conteudo__titulo">Poke Games</h1>
-        <p class="apresentacao__conteudo__texto">Come challenge your Pokémon knowledge with games!</p>
-        <p class="apresentacao__conteudo__texto">Let's play!</p>
-        <div class="apresentacao__links">
-            <a class="apresentacao__links__link" href="{{ url_for('higher_lower.home') }}">
+    <main class="main_content">
+        <h1 class="main_content_title">Poke Games</h1>
+        <p class="main_content_text">Come challenge your Pokémon knowledge with games!</p>
+        <p class="main_content_text">Let's play!</p>
+        <div class="main_content_links">
+            <a class="main_content_links_item" href="{{ url_for('higher_lower.home') }}">
                 High Lower Game
             </a>
-            <a class="apresentacao__links__link" href="{{ url_for('whos_that_pkmn.home') }}">
+            <a class="main_content_links_item" href="{{ url_for('whos_that_pkmn.home') }}">
                 Who's that Pokémon
             </a>
         </div>

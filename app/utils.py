@@ -5,55 +5,67 @@ from .config import Config
 
 generations = Config.GENERATIONS
 all_generations = Config.ALL_GENERATIONS
-all_stats = Config.ALL_STATS
+all_attributes = Config.ALL_ATTRIBUTES
 
+# Get full database
 def get_data_full():
     with current_app.app_context():
         return current_app.config['DATA_FULL']
 
+# Get Dict with Generations and Pokemon ID range
 def get_generations():
-    # Access the config within an application context
     return Config.GENERATIONS
 
+# Get all Generations
 def get_all_generations():
-    # Access the config within an application context
     return Config.ALL_GENERATIONS
 
-def get_all_stats():
-    # Access the config within an application context
-    return Config.ALL_STATS
+# Get all attributes
+def get_all_attributes():
+    return Config.ALL_ATTRIBUTES
 
+# Draw a random number in available Pokemon ID
 def randint_exclude(gens, exclude):
-    
-    # Filtra os intervalos de números das gerações especificadas
+    # Filters the number ranges of the specified generations
     gen_ranges = [(start, end) for start, end, gen in generations if gen in gens]
 
-    # Junta todos os intervalos em uma lista de números permitidos
+    # Combines all the ranges into a list of permitted numbers
     allowed_numbers = []
     for start, end in gen_ranges:
         allowed_numbers.extend(range(start, end + 1))
     
-    # Filtra os números permitidos excluindo os da lista de exclusão
-    allowed_numbers = [num for num in allowed_numbers if num not in exclude]
+    # Filters the permitted numbers by excluding those on the exclusion list
+    allowed_numbers = [num for num in allowed_numbers if num not in exclude] 
 
     if not allowed_numbers:
         raise ValueError("No numbers available with the given constraints.")
 
-    # Sorteia um número aleatório dos números permitidos
+    # Draws a random number from the permitted numbers
     return random.choice(allowed_numbers)
 
-def sort_pkmn(data, random_stat = all_stats):
+# Create Pokemon object using randint_exclude() function
+def sort_pkmn(data, random_stat = all_attributes):
+    # Draw a random Pokemon ID
     id_pkmn = randint_exclude(session.get('gen', []), session.get('list_id', []))
+    # Put ID in the exclusion list
     session['list_id'].append(id_pkmn)
     session['list_id'] = list(set(session['list_id']))
+
+    # Create Pokemon object
     nome = data.loc[id_pkmn, 'name']
     stat_pkmn = data.loc[id_pkmn, random_stat]
     sprite = data.loc[id_pkmn, 'url_sprite']
     shadow_sprite = data.loc[id_pkmn, 'url_shadow_sprite']
-    pkmn = Pokemon(id_pkmn, nome, stat_pkmn, sprite, shadow_sprite)
+    id_name = data.loc[id_pkmn, 'id_name']
+    pkmn = Pokemon(id_pkmn, nome, id_name, stat_pkmn, sprite, shadow_sprite)
 
     return pkmn
 
+# Function used to convert Attribute to float or int
+def transform_stat_number(stat, random_stat):
+    return round(float(stat), 1) if random_stat in ['Height (cm)', 'Weight (Kg)'] else int(stat)
+
+# Function to verify and redirect when game ended
 def game_end(game):
     if game == 'hl':
         high_score_game = 'high_score_hl'
@@ -88,6 +100,7 @@ def game_end(game):
     
     return None
 
+# Function to clear specific parameters in session cache
 def clean_session(type = None):
     keys = ['score', 'text', 'score_msg', 'pkmn_list', 'list_id']
     if type == 'reset_hl':
@@ -95,7 +108,7 @@ def clean_session(type = None):
     elif type == 'reset_wtp':
         pass
     elif type == 'reset_hl_all' or 'all':
-        keys.extend(['last_pkmn_1_id', 'last_pkmn_2_id', 'atributes', 'gen', 'data'])
+        keys.extend(['last_pkmn_1_id', 'last_pkmn_2_id', 'attributes', 'gen', 'data'])
     elif type == 'reset_wtp_all':
         keys.extend(['gen', 'data'])
 
@@ -103,4 +116,4 @@ def clean_session(type = None):
         if key in keys:
             session.pop(key, None)
         
-    return(f'Cacher Cleared: {type}')
+    return(f'Cache Cleared: {type}')

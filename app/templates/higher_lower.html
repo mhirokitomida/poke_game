@@ -1,11 +1,11 @@
 {% extends "template.html" %}
-{% block conteudo %}
-<header class="cabecalho">
-    <nav class="cabecalho__menu">
+{% block content%}
+<header class="header">
+    <nav class="header_menu">
         <div class = "nav_menu">
-            <a class="cabecalho__menu__link" href="{{ url_for('home.index') }}">Home</a>
-            <p class="cabecalho__menu__link">Higher Lower Game</p>
-            <a class="cabecalho__menu__link" href="{{ url_for('whos_that_pkmn.home') }}">Who's that Pokémon</a>
+            <a class="header_menu_link" href="{{ url_for('home.index') }}">Home</a>
+            <p class="header_menu_link">Higher Lower Game</p>
+            <a class="header_menu_link" href="{{ url_for('whos_that_pkmn.home') }}">Who's that Pokémon</a>
         </div>
         <div class = "toogle_menu">
             <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
@@ -18,24 +18,24 @@
     </nav>
 </header>
 
-<main class="apresentacao">
-    <h1 class="apresentacao__conteudo__titulo" id="stat">{{ stat }}</h1>
+<main class="main_content">
+    <h1 class="main_content_title" id="stat">{{ stat }}</h1>
     <div class="score-container">
-        <h2 class="apresentacao__conteudo__titulo" id="score">Score: 0</h2>
-        <h2 class="apresentacao__conteudo__titulo" id="high_score">High Score: {{high_score_hl}}</h2>
+        <h2 class="main_content_title" id="score">Score: 0</h2>
+        <h2 class="main_content_title" id="high_score">High Score: {{high_score_hl}}</h2>
     </div>
 
     <section class="pokemon_battle">
         <div class="pokemon" id="pkmn-1"> 
-            <h2 class="apresentacao__conteudo__titulo">{{ pkmn_1.nome }}</h2>
+            <h2 class="main_content_title">{{ pkmn_1.nome }}</h2>
             <img src="{{ pkmn_1.sprite }}" alt="Pokemon 1" data-stat="{{ pkmn_1.stat }}">
-            <h3 class="apresentacao__conteudo__titulo" id="stat-pkmn-1"></h3>
+            <h3 class="main_content_title" id="stat-pkmn-1"></h3>
         </div>
         <h2 id="vs">VS</h2> 
         <div class="pokemon" id="pkmn-2"> 
-            <h2 class="apresentacao__conteudo__titulo">{{ pkmn_2.nome }}</h2>
+            <h2 class="main_content_title">{{ pkmn_2.nome }}</h2>
             <img src="{{ pkmn_2.sprite }}" alt="Pokemon 2" data-stat="{{ pkmn_2.stat }}">
-            <h3 class="apresentacao__conteudo__titulo" id="stat-pkmn-2"></h3>
+            <h3 class="main_content_title" id="stat-pkmn-2"></h3>
         </div>
     </section>
     <div id="confirmModal" class="modal">
@@ -48,166 +48,181 @@
 </main>
 
 <script>
-let score = 0;
-let lastChangedPkmnId = null;
+    let score = 0;
+    let lastChangedPkmnId = null;
 
-document.querySelector('.pokemon_battle').addEventListener('click', function(event) {
-    if (event.target.tagName === 'IMG') {
-        checkWinner(event.target);
-    }
-});
+    // Alert the user when they attempt to navigate to another page
+    document.addEventListener('DOMContentLoaded', function() {
+        let showUnloadAlert = true;
 
-document.addEventListener('DOMContentLoaded', function() {
-            let showUnloadAlert = true;
+        const links = document.querySelectorAll('a');
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmYes = document.getElementById('confirmYes');
+        const confirmNo = document.getElementById('confirmNo');
+        let currentLink = null;
 
-            const links = document.querySelectorAll('a');
-            const confirmModal = document.getElementById('confirmModal');
-            const confirmYes = document.getElementById('confirmYes');
-            const confirmNo = document.getElementById('confirmNo');
-            let currentLink = null;
-
-            for(let link of links) {
-                link.addEventListener('click', function(event) {
-                    if (showUnloadAlert) {
-                        event.preventDefault();
-                        currentLink = link.getAttribute('href');
-                        confirmModal.style.display = 'block';
-                    }
-                });
-            }
-
-            confirmYes.addEventListener('click', function() {
-                window.location.href = currentLink;
+        for(let link of links) {
+            link.addEventListener('click', function(event) {
+                if (showUnloadAlert) {
+                    event.preventDefault();
+                    currentLink = link.getAttribute('href');
+                    confirmModal.style.display = 'block';
+                }
             });
+        }
 
-            confirmNo.addEventListener('click', function() {
-                confirmModal.style.display = 'none';
-                currentLink = null;
-            });
+        confirmYes.addEventListener('click', function() {
+            window.location.href = currentLink;
         });
 
-function animateStat(elementId, targetValue, stat_used) {
-    let currentValue = 0;
-    const value = (stat_used == 'total') ? 10 : 5;
-    let elementToShow = document.getElementById(elementId);
+        confirmNo.addEventListener('click', function() {
+            confirmModal.style.display = 'none';
+            currentLink = null;
+        });
+    });
 
-    if (elementToShow) {
-        elementToShow.style.visibility = "visible";
-    } else {
-        console.error(`Element with ID ${elementId} not found.`);
+    // Check selected Pokemon
+    document.querySelector('.pokemon_battle').addEventListener('click', function(event) {
+        if (event.target.tagName === 'IMG') {
+            checkWinner(event.target);
+        }
+    });
+
+    // Function to animate attribute number
+    function animateStat(elementId, targetValue, stat_used) {
+        let currentValue = 0;
+        const value = (stat_used == 'Total') ? 10 : 
+                    (stat_used == 'Weight (Kg)') ? 3.1 : 
+                    (stat_used == 'Height (cm)') ? 0.1  : 5;
+        let elementToShow = document.getElementById(elementId);
+
+        if (elementToShow) {
+            elementToShow.style.visibility = "visible";
+        } else {
+            console.error(`Element with ID ${elementId} not found.`);
+        }
+
+        return new Promise((resolve) => {
+            function increaseStat() {
+                if (currentValue < targetValue) {
+                    currentValue = parseFloat((currentValue + value).toFixed(1));
+                    if (currentValue > targetValue) {
+                        currentValue = targetValue;
+                    }
+                    document.getElementById(elementId).textContent = currentValue;
+                    requestAnimationFrame(increaseStat);
+                } else if (targetValue === 0) {
+                    document.getElementById(elementId).textContent = '?';
+                } else {
+                    setTimeout(() => {
+                        resolve(); 
+                    }, 500);
+                    
+                }
+            }
+            increaseStat();
+        });
     }
 
-    return new Promise((resolve) => {
-        function increaseStat() {
-            if (currentValue < targetValue) {
-                currentValue += value;
-                if (currentValue > targetValue) {
-                    currentValue = targetValue;
-                }
-                document.getElementById(elementId).textContent = currentValue;
-                requestAnimationFrame(increaseStat);
-            } else if (targetValue === 0) {
-                document.getElementById(elementId).textContent = '?';
+    // Function to check if user got the right answer
+    function checkWinner(selectedPkmn) {
+        const statUsed = document.getElementById('stat').textContent;
+        const pkmn1Elem = document.getElementById('pkmn-1').querySelector('img');
+        const pkmn2Elem = document.getElementById('pkmn-2').querySelector('img');
+
+        const selectedStat = parseFloat(selectedPkmn.getAttribute('data-stat'));
+        const otherPkmn = selectedPkmn === pkmn1Elem ? pkmn2Elem : pkmn1Elem;
+        const otherStat = parseFloat(otherPkmn.getAttribute('data-stat'));
+
+        if (selectedStat >= otherStat) {
+            userAction(true);
+            score += 1;
+            document.getElementById('score').textContent = "Score: " + score;
+
+            let parentDivId;
+            if (!lastChangedPkmnId) {
+                parentDivId = selectedPkmn === pkmn1Elem ? "pkmn-1" : "pkmn-2";
             } else {
-                setTimeout(() => {
-                    resolve(); 
-                }, 500);
-                
+                parentDivId = lastChangedPkmnId === "pkmn-1" ? "pkmn-2" : "pkmn-1";
             }
-        }
-        increaseStat();
-    });
-}
+            lastChangedPkmnId = parentDivId; 
 
-function checkWinner(selectedPkmn) {
-    
-    const statUsed = document.getElementById('stat').textContent;
-    const pkmn1Elem = document.getElementById('pkmn-1').querySelector('img');
-    const pkmn2Elem = document.getElementById('pkmn-2').querySelector('img');
+            redrawPokemons(parentDivId);
 
-    const selectedStat = parseInt(selectedPkmn.getAttribute('data-stat'));
-    const otherPkmn = selectedPkmn === pkmn1Elem ? pkmn2Elem : pkmn1Elem;
-    const otherStat = parseInt(otherPkmn.getAttribute('data-stat'));
-
-    if (selectedStat >= otherStat) {
-        userAction(true);
-        score += 1;
-        document.getElementById('score').textContent = "Score: " + score;
-
-        let parentDivId;
-        if (!lastChangedPkmnId) {
-            parentDivId = selectedPkmn === pkmn1Elem ? "pkmn-1" : "pkmn-2";
         } else {
-            parentDivId = lastChangedPkmnId === "pkmn-1" ? "pkmn-2" : "pkmn-1";
+            userAction(false);
+            score = 0; 
+            document.getElementById('pkmn-1').classList.add('disabled');
+            document.getElementById('pkmn-2').classList.add('disabled');
+            Promise.all([
+                animateStat("stat-pkmn-1", parseFloat(pkmn1Elem.getAttribute('data-stat')), statUsed),
+                animateStat("stat-pkmn-2", parseFloat(pkmn2Elem.getAttribute('data-stat')), statUsed)
+            ]).then(() => {
+                postToURL("/higher_lower", { game_end_arg: "end" });
+            });
         }
-        lastChangedPkmnId = parentDivId; 
+    }
 
-        ressortearPokemons(parentDivId);
-
-    } else {
-        userAction(false);
-        score = 0; 
+    // Function to request new Pokemon to server
+    function redrawPokemons(lastChangedPkmnId) {
+        // Temporarily disable click on Pokemon
         document.getElementById('pkmn-1').classList.add('disabled');
         document.getElementById('pkmn-2').classList.add('disabled');
-        Promise.all([
-            animateStat("stat-pkmn-1", parseInt(pkmn1Elem.getAttribute('data-stat')), statUsed),
-            animateStat("stat-pkmn-2", parseInt(pkmn2Elem.getAttribute('data-stat')), statUsed)
-        ]).then(() => {
-            postToURL("/higher_lower", { game_end_arg: "end" });
+
+        // Get current stat and Pokemons element
+        const statUsed = document.getElementById('stat').textContent;
+        const pkmn1Elem = document.getElementById('pkmn-1').querySelector('img');
+        const pkmn2Elem = document.getElementById('pkmn-2').querySelector('img');
+
+        // Request server to redraw Pokemon
+        fetch(`/redraw_pokemons_hl?last_id=${lastChangedPkmnId}`)
+        .then(response => response.json())
+        .then(data => {
+            // Check if Game ended
+            if (data.game_end == 'True') {
+                Promise.all([
+                    animateStat("stat-pkmn-1", parseFloat(pkmn1Elem.getAttribute('data-stat')), statUsed),
+                    animateStat("stat-pkmn-2", parseFloat(pkmn2Elem.getAttribute('data-stat')), statUsed)
+                ]).then(() => {
+                    postToURL("/higher_lower", { game_end_arg: "end_full" });
+                });
+            }
+            else{
+                Promise.all([
+                    animateStat("stat-pkmn-1", parseFloat(pkmn1Elem.getAttribute('data-stat')), statUsed),
+                    animateStat("stat-pkmn-2", parseFloat(pkmn2Elem.getAttribute('data-stat')), statUsed)
+                ]).then(() => {
+                    // Get new stat
+                    const statDiv = document.getElementById('stat');
+                    statDiv.textContent = data.random_stat;
+                    const statUsed = statDiv.textContent;
+            
+                    // Change one Pokemon and maintain the other
+                    const [newPokemonDiv, oldPokemonDiv] = lastChangedPkmnId === 'pkmn-1' ? 
+                    [document.getElementById('pkmn-2'), document.getElementById('pkmn-1')] : 
+                    [document.getElementById('pkmn-1'), document.getElementById('pkmn-2')];
+
+                    // New Pokemon
+                    newPokemonDiv.querySelector('h2').textContent = data.novo_pokemon.nome;
+                    newPokemonDiv.querySelector('img').src = data.novo_pokemon.sprite;
+                    newPokemonDiv.querySelector('img').setAttribute('data-stat', data.novo_pokemon.stat);
+
+                    // Maintain Pokemon
+                    oldPokemonDiv.querySelector('h2').textContent = data.old_pokemon.nome;
+                    oldPokemonDiv.querySelector('img').src = data.old_pokemon.sprite;
+                    oldPokemonDiv.querySelector('img').setAttribute('data-stat', data.old_pokemon.stat);
+
+                    // Enable click on Pokemon again
+                    setTimeout(() => {
+                        document.getElementById('pkmn-1').classList.remove('disabled');
+                        document.getElementById('pkmn-2').classList.remove('disabled');
+                        document.getElementById("stat-pkmn-1").style.visibility = "hidden";
+                        document.getElementById("stat-pkmn-2").style.visibility = "hidden";
+                    }, 800);
+                });
+            }
         });
     }
-}
-
-function ressortearPokemons(lastChangedPkmnId) {
-    document.getElementById('pkmn-1').classList.add('disabled');
-    document.getElementById('pkmn-2').classList.add('disabled');
-    const statUsed = document.getElementById('stat').textContent;
-    const pkmn1Elem = document.getElementById('pkmn-1').querySelector('img');
-    const pkmn2Elem = document.getElementById('pkmn-2').querySelector('img');
-
-    fetch(`/resort_pokemons_hl?last_id=${lastChangedPkmnId}`)
-    .then(response => response.json())
-    .then(data => {
-        if (data.game_end == 'True') {
-            Promise.all([
-                animateStat("stat-pkmn-1", parseInt(pkmn1Elem.getAttribute('data-stat')), statUsed),
-                animateStat("stat-pkmn-2", parseInt(pkmn2Elem.getAttribute('data-stat')), statUsed)
-            ]).then(() => {
-                postToURL("/higher_lower", { game_end_arg: "end_full" });
-            });
-        }
-        else{
-            Promise.all([
-                animateStat("stat-pkmn-1", parseInt(pkmn1Elem.getAttribute('data-stat')), statUsed),
-                animateStat("stat-pkmn-2", parseInt(pkmn2Elem.getAttribute('data-stat')), statUsed)
-            ]).then(() => {
-                const statDiv = document.getElementById('stat');
-                statDiv.textContent = data.random_stat;
-                const statUsed = statDiv.textContent;
-        
-                const [newPokemonDiv, oldPokemonDiv] = lastChangedPkmnId === 'pkmn-1' ? 
-                [document.getElementById('pkmn-2'), document.getElementById('pkmn-1')] : 
-                [document.getElementById('pkmn-1'), document.getElementById('pkmn-2')];
-
-                // Update the Pokémon based on the div ID
-                newPokemonDiv.querySelector('h2').textContent = data.novo_pokemon.nome;
-                newPokemonDiv.querySelector('img').src = data.novo_pokemon.sprite;
-                newPokemonDiv.querySelector('img').setAttribute('data-stat', data.novo_pokemon.stat);
-
-                oldPokemonDiv.querySelector('h2').textContent = data.old_pokemon.nome;
-                oldPokemonDiv.querySelector('img').src = data.old_pokemon.sprite;
-                oldPokemonDiv.querySelector('img').setAttribute('data-stat', data.old_pokemon.stat);
-
-                setTimeout(() => {
-                    document.getElementById('pkmn-1').classList.remove('disabled');
-                    document.getElementById('pkmn-2').classList.remove('disabled');
-                    document.getElementById("stat-pkmn-1").style.visibility = "hidden";
-                    document.getElementById("stat-pkmn-2").style.visibility = "hidden";
-                }, 800);
-            });
-        }
-    });
-}
 
 </script>
 {% endblock %}

@@ -30,19 +30,19 @@ body{
     font-size: 16px;
 }
 
-.cabecalho{
+.header{
     padding: 2% 2%;
     background-color: var(--cor-vermelho);
 }
 
-.cabecalho__menu{
+.header_menu{
     display: flex;
     justify-content: space-between; 
     align-items: center; 
     gap: 5rem;
 }
 
-.cabecalho__menu__link{
+.header_menu_link{
     font-family: var(--fonte-secundaria);
     font-size: 2.5rem;
     font-weight: 600;
@@ -108,7 +108,7 @@ input:checked + .slider:before {
     transform: translateX(4rem);
 }
 
-.apresentacao{
+.main_content{
     position: relative;
     background-size: 100% 100%;
     background-image: url("/static/assets/day.jpg");
@@ -125,7 +125,7 @@ input:checked + .slider:before {
     text-align: center;
 }
 
-.apresentacao.night {
+.main_content.night {
     background-image: url("/static/assets/night.jpg");
 }
 
@@ -146,7 +146,7 @@ input:checked + .slider:before {
     padding: 20rem 5rem;
 }
 
-.apresentacao__links{
+.main_content_links{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -154,7 +154,7 @@ input:checked + .slider:before {
     gap: 2rem;
 }
 
-.apresentacao__links__link{
+.main_content_links_item{
     background-color: var(--cor-vermelho);
     display: flex;
     justify-content: center;
@@ -171,11 +171,11 @@ input:checked + .slider:before {
     -webkit-text-stroke: 0.2rem var(--cor-preto);
 }
 
-.apresentacao__links__link:hover{
+.main_content_links_item:hover{
     background-color: var(--cor-hover);
 }
 
-.rodape{
+.footer{
     color: var(--cor-primaria);
     background-color: var(--cor-cinza);
     padding: 1.5rem;
@@ -236,7 +236,7 @@ input:checked + .slider:before {
     overflow-x: auto;  
 }
 
-.apresentacao.correct::before, .apresentacao.wrong::before {
+.main_content.correct::before, .main_content.wrong::before {
     content: "";
     position: absolute;
     top: 0;
@@ -247,11 +247,11 @@ input:checked + .slider:before {
     pointer-events: none;
 }
 
-.apresentacao.correct::before {
+.main_content.correct::before {
     animation: flashGreen 0.5s forwards;
 }
 
-.apresentacao.wrong::before {
+.main_content.wrong::before {
     animation: flashRed 0.5s forwards;
 }
 
@@ -342,7 +342,7 @@ input[type="checkbox"]:checked + label::before {
     font-size: 2rem;  
 }
 
-#submit_higher_lower{
+#submit_forms{
     color: var(--cor-amarelo);
     background-color: rgb(204, 204, 204);
     cursor: pointer; 
@@ -351,7 +351,7 @@ input[type="checkbox"]:checked + label::before {
     border: 0.2rem solid var(--cor-azul);
 }
 
-#submit_higher_lower:hover {
+#submit_forms:hover {
     background-color: rgba(204, 204, 204, 0.8); 
 }
 

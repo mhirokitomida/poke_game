@@ -1,11 +1,11 @@
 {% extends "template.html" %}
-{% block conteudo %}
-    <header class="cabecalho">
-        <nav class="cabecalho__menu">
+{% block content%}
+    <header class="header">
+        <nav class="header_menu">
             <div class = "nav_menu">
-                <a class="cabecalho__menu__link" href="{{ url_for('home.index') }}">Home</a>
-                <p class="cabecalho__menu__link">Higher Lower Game</p>
-                <a class="cabecalho__menu__link" href="{{ url_for('whos_that_pkmn.home') }}">Who's that Pokémon</a>
+                <a class="header_menu_link" href="{{ url_for('home.index') }}">Home</a>
+                <p class="header_menu_link">Higher Lower Game</p>
+                <a class="header_menu_link" href="{{ url_for('whos_that_pkmn.home') }}">Who's that Pokémon</a>
             </div>
             <div class = "toogle_menu">
                 <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
@@ -17,23 +17,27 @@
             </div>
         </nav>
     </header>
-    <main class="apresentacao">
-        <h1 class="apresentacao__conteudo__titulo">Higher Lower Game</h1>
-        <h2 class="apresentacao__conteudo__titulo">Rules</h2>
-        <p class="apresentacao__conteudo__texto">
-            Your task is to determine which Pokémon has the superior atribute. 
+    <main class="main_content">
+        <h1 class="main_content_title">Higher Lower Game</h1>
+        <h2 class="main_content_title">Rules</h2>
+        <p class="main_content_text">
+            Your task is to determine which Pokémon has the superior attribute. 
             As the game progresses, a new Pokémon will be presented to you — without any repeats. 
-            Make your choice based on the displayed atribute, which is randomly chosen from your selected settings. 
-            Both the atribute and Pokémon choices are guided by your game settings.  
+            Make your choice based on the displayed attribute, which is randomly chosen from your selected settings. 
+            Both the attribute and Pokémon choices are guided by your game settings.  
             Aim to consecutively choose correctly and see how many you get right in a row!
         </p>
-        <div class="formularios">
-            <h2 class="apresentacao__conteudo__titulo">Settings</h2>
+        <div class="forms">
+            <h2 class="main_content_title">Settings</h2>
             <form action="/higher_lower" method="post" id="gameForm">
                 <div class="list-container">
                     <fieldset>
-                        <legend class = 'legend_selection'>Select the Gen's</legend>
+                        <legend class = 'legend_selection'>Select the Generations</legend>
                         <div class="scrollable-list">
+                            <div class="item-list">
+                                <input type="checkbox" id="select-all-gen" name="select-all-gen" value="select-all-gen">
+                                <label for="select-all-gen">All Gen's</label>
+                            </div>
                             <div class="item-list">
                                 <input type="checkbox" id="gen-I" name="gen[]" value="generation-i">
                                 <label for="gen-I">Gen I</label>
@@ -70,58 +74,90 @@
                     </fieldset>
 
                 <fieldset>
-                    <legend class = 'legend_selection'>Select the Atributes</legend>
+                    <legend class = 'legend_selection'>Select the Attributes</legend>
                     <div class="scrollable-list">
                         <div class="item-list">
-                            <input type="checkbox" id="atribute-hp" name="atributes[]" value="hp">
-                            <label for="atribute-hp">HP</label>
+                            <input type="checkbox" id="select-all-attributes" name="select-all-attributes" value="select-all-attributes">
+                            <label for="select-all-attributes">All Attributes</label>
                         </div>
                         <div class="item-list">
-                            <input type="checkbox" id="atribute-attack" name="atributes[]" value="attack">
-                            <label for="atribute-attack">Attack</label>
+                            <input type="checkbox" id="attribute-height" name="attributes[]" value="Height (cm)">
+                            <label for="attribute-height">Height (cm)</label>
                         </div>
                         <div class="item-list">
-                            <input type="checkbox" id="atribute-defense" name="atributes[]" value="defense">
-                            <label for="atribute-defense">Defense</label>
+                            <input type="checkbox" id="attribute-weight" name="attributes[]" value="Weight (Kg)">
+                            <label for="attribute-weight">Weight (Kg)</label>
                         </div>
                         <div class="item-list">
-                            <input type="checkbox" id="atribute-special-attack" name="atributes[]" value="special-attack">
-                            <label for="atribute-special-attack">Sp. Attack</label>
+                            <input type="checkbox" id="attribute-hp" name="attributes[]" value="HP">
+                            <label for="attribute-hp">HP</label>
                         </div>
                         <div class="item-list">
-                            <input type="checkbox" id="atribute-special-defense" name="atributes[]" value="special-defense">
-                            <label for="atribute-special-defense">Sp. Defense</label>
+                            <input type="checkbox" id="attribute-attack" name="attributes[]" value="Attack">
+                            <label for="attribute-attack">Attack</label>
                         </div>
                         <div class="item-list">
-                            <input type="checkbox" id="atribute-speed" name="atributes[]" value="speed">
-                            <label for="atribute-speed">Speed</label>
+                            <input type="checkbox" id="attribute-defense" name="attributes[]" value="Defense">
+                            <label for="attribute-defense">Defense</label>
                         </div>
                         <div class="item-list">
-                            <input type="checkbox" id="atribute-total" name="atributes[]" value="total">
-                            <label for="atribute-total">Total</label>
+                            <input type="checkbox" id="attribute-special-attack" name="attributes[]" value="Sp. Attack">
+                            <label for="attribute-special-attack">Sp. Attack</label>
+                        </div>
+                        <div class="item-list">
+                            <input type="checkbox" id="attribute-special-defense" name="attributes[]" value="Sp. Defense">
+                            <label for="attribute-special-defense">Sp. Defense</label>
+                        </div>
+                        <div class="item-list">
+                            <input type="checkbox" id="attribute-speed" name="attributes[]" value="Speed">
+                            <label for="attribute-speed">Speed</label>
+                        </div>
+                        <div class="item-list">
+                            <input type="checkbox" id="attribute-total" name="attributes[]" value="Total">
+                            <label for="attribute-total">Total</label>
                         </div>
 
                     </div>
                 </fieldset>
             </div>
-                <input id = 'submit_higher_lower' type="submit" value="Play">
+                <input id = 'submit_forms' type="submit" value="Play">
             </form>
         </div>
     </main>
 
     <script>
+        // Submit forms with settings
         document.addEventListener('DOMContentLoaded', function() {
-                const form = document.getElementById('gameForm');
-
-                form.addEventListener('submit', function(e) {
-                    const gensChecked = document.querySelectorAll('input[name="gen[]"]:checked').length;
-                    const atributesChecked = document.querySelectorAll('input[name="atributes[]"]:checked').length;
-
-                    if (gensChecked === 0 || atributesChecked === 0) {
-                        e.preventDefault(); 
-                        alert('Select one value in Gen and Atribute');
-                    }
+            // Select all Generations
+            const selectAllGenCheckbox = document.getElementById('select-all-gen');
+            const checkboxesgen = document.querySelectorAll('input[name="gen[]"]');
+            selectAllGenCheckbox.addEventListener('change', function(e) {
+                checkboxesgen.forEach(checkboxesgen => {
+                    checkboxesgen.checked = selectAllGenCheckbox.checked;
                 });
             });
+
+            // Select all Attributes
+            const selectAllAttributesCheckbox = document.getElementById('select-all-attributes');
+            const checkboxesattributes = document.querySelectorAll('input[name="attributes[]"]');
+            selectAllAttributesCheckbox.addEventListener('change', function(e) {
+                checkboxesattributes.forEach(checkboxesattributes => {
+                    checkboxesattributes.checked = selectAllAttributesCheckbox.checked;
+                });
+            });
+        
+            // Submit form with selected Generations and Attributes
+            const form = document.getElementById('gameForm');
+            form.addEventListener('submit', function(e) {
+                const gensChecked = document.querySelectorAll('input[name="gen[]"]:checked').length;
+                const attributesChecked = document.querySelectorAll('input[name="attributes[]"]:checked').length;
+
+                // Check if at least one value in both Generations and Attributes is selected
+                if (gensChecked === 0 || attributesChecked === 0) {
+                    e.preventDefault(); 
+                    alert('Please select at least one value in Generations and Attributes!!!');
+                }
+            });
+        });
     </script>
 {% endblock %}

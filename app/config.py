@@ -13,4 +13,4 @@ class Config:
     ]
 
     ALL_GENERATIONS = ['generation-i', 'generation-ii', 'generation-iii', 'generation-iv', 'generation-v', 'generation-vi', 'generation-vii', 'generation-viii']
-    ALL_STATS = ['hp', 'attack', 'defense', 'special-attack', 'special-defense', 'speed', 'total']
+    ALL_ATTRIBUTES = ['Height (cm)', 'Weight (Kg)', 'HP', 'Attack', 'Defense', 'Sp. Attack', 'Sp. Defense', 'Speed', 'Total']

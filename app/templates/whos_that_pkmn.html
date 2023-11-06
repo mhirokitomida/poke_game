@@ -1,11 +1,11 @@
 {% extends "template.html" %}
-{% block conteudo %}
-<header class="cabecalho">
-    <nav class="cabecalho__menu">
+{% block content%}
+<header class="header">
+    <nav class="header_menu">
         <div class = "nav_menu">
-            <a class="cabecalho__menu__link" href="{{ url_for('home.index') }}">Home</a>
-            <a class="cabecalho__menu__link" href="{{ url_for('higher_lower.home') }}">Higher Lower Game</a>
-            <p class="cabecalho__menu__link">Who's that Pokémon</p>
+            <a class="header_menu_link" href="{{ url_for('home.index') }}">Home</a>
+            <a class="header_menu_link" href="{{ url_for('higher_lower.home') }}">Higher Lower Game</a>
+            <p class="header_menu_link">Who's that Pokémon</p>
         </div>
         <div class = "toogle_menu">
             <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
@@ -18,19 +18,19 @@
     </nav>
 </header>
 
-<main class="apresentacao">
-    <h1 class="apresentacao__conteudo__titulo">Who's that Pókemon? </h1>
+<main class="main_content">
+    <h1 class="main_content_title">Who's that Pókemon? </h1>
     <div class="score-container">
-        <h2 class="apresentacao__conteudo__texto" id="score">Score: 0</h2>
-        <h2 class="apresentacao__conteudo__texto" id="high_score">High Score: {{high_score_wtp}}</h2>
+        <h2 class="main_content_text" id="score">Score: 0</h2>
+        <h2 class="main_content_text" id="high_score">High Score: {{high_score_wtp}}</h2>
     </div>
 
     <section class="pokemon_v2" id="pkmn">
         <div class = 'guess_pkmn'> 
-            <h2 class="apresentacao__conteudo__texto" id="nome_pkmn">?</h2>
-            <img src="{{ pkmn.shadow_sprite }}" alt="Pokemon" name="{{ pkmn.nome }}" id="pokemonImage" sprite="{{pkmn.sprite}}">
+            <h2 class="main_content_text" id="nome_pkmn">?</h2>
+            <img src="{{ pkmn.shadow_sprite }}" alt="Pokemon" id_name="{{ pkmn.id_name }}" id="pokemonImage" sprite="{{pkmn.sprite}}">
         </div>
-        <div class="formularios">
+        <div class="forms">
             <form action="/whos_that_pkmn" method="post" id="gameForm">
                 <div class = 'guess_panel'>
                     <div class = 'guess_pkmn_list'>
@@ -43,11 +43,11 @@
                         </select>
                         <input type="text" id="global-filter" placeholder="Filter Pokémon Name">
                         <div class="scrollable-list" id="pokemon-list">
-                            <!-- Outros itens serão preenchidos por JavaScript -->
+                            <!-- items will be populated by JavaScript -->
                         </div>
                         
                         <div class="submit-container">
-                            <input id='submit_higher_lower' type="submit" value="Guess">
+                            <input id='submit_forms' type="submit" value="Guess">
                         </div>
                     </div>
                  
@@ -56,7 +56,6 @@
         </div>
     </section>
     
-
     <div id="confirmModal" class="modal">
         <div class="modal-content">
             <p>Are you sure you want to exit? You'll lose your current progress!</p>
@@ -67,209 +66,212 @@
 </main>
 
 <script type="text/javascript">
-let score = 0;
-generations_dict = {{ generations_dict | tojson | safe }};
+    let score = 0;
+    generations_dict = {{ generations_dict | tojson | safe }};
 
-document.addEventListener('DOMContentLoaded', function() {
-            let showUnloadAlert = true;
+    // Alert the user when they attempt to navigate to another page
+    document.addEventListener('DOMContentLoaded', function() {
+        let showUnloadAlert = true;
 
-            const links = document.querySelectorAll('a');
-            const confirmModal = document.getElementById('confirmModal');
-            const confirmYes = document.getElementById('confirmYes');
-            const confirmNo = document.getElementById('confirmNo');
-            let currentLink = null;
+        const links = document.querySelectorAll('a');
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmYes = document.getElementById('confirmYes');
+        const confirmNo = document.getElementById('confirmNo');
+        let currentLink = null;
 
-            for(let link of links) {
-                link.addEventListener('click', function(event) {
-                    if (showUnloadAlert) {
-                        event.preventDefault();
-                        currentLink = link.getAttribute('href');
-                        confirmModal.style.display = 'block';
-                    }
-                });
-            }
-
-            confirmYes.addEventListener('click', function() {
-                window.location.href = currentLink;
+        for(let link of links) {
+            link.addEventListener('click', function(event) {
+                if (showUnloadAlert) {
+                    event.preventDefault();
+                    currentLink = link.getAttribute('href');
+                    confirmModal.style.display = 'block';
+                }
             });
-
-            confirmNo.addEventListener('click', function() {
-                confirmModal.style.display = 'none';
-                currentLink = null;
-            });
-        });
-
-// Quando o filtro de geração muda, atualiza a lista com ambos os filtros
-document.getElementById('generation-filter').addEventListener('change', function() {
-    const genFilter = this.value;
-    const textFilter = document.getElementById('global-filter').value;
-    updateList(textFilter, genFilter);
-});
-
-// Quando o filtro de texto muda, atualiza a lista com ambos os filtros
-document.getElementById('global-filter').addEventListener('input', function() {
-    const textFilter = this.value;
-    const genFilter = document.getElementById('generation-filter').value;
-    updateList(textFilter, genFilter);
-});
-
-// Inicializa a lista no carregamento da página
-document.addEventListener('DOMContentLoaded', () => {
-    const textFilter = document.getElementById('global-filter').value;
-    const genFilter = document.getElementById('generation-filter').value;
-    updateList(textFilter, genFilter);
-});
-
-// Inicializa a lista no carregamento da página
-document.addEventListener('DOMContentLoaded', () => {
-    initializeLists(); // Chama a função para inicializar as listas
-});
-
-// Lógica para submissão do formulário
-document.getElementById('gameForm').onsubmit = function(event) {
-    event.preventDefault();
-
-    var selectedPokemon = document.querySelector('input[name="selected_pokemon"]:checked');
-    var filterInput = document.getElementById('global-filter');
-    if(selectedPokemon){
-        filterInput.value = '';
-        updateList();
-        checkWinner(selectedPokemon);
-    } else {
-        alert('No Pokémon selected');
-        event.preventDefault(); // Impede o envio do formulário se nenhum Pokémon estiver selecionado
-    }
-};
-
-// Função para filtrar todas as listas baseada no valor do filtro global
-function filterAllLists() {
-    var filterValue = document.getElementById('global-filter').value.toLowerCase();
-    var listItems = document.querySelectorAll('.scrollable-list .pokemon-list');
-
-    listItems.forEach(function(item) {
-        var text = item.textContent.toLowerCase();
-        if (text.includes(filterValue)) {
-            item.style.display = '';
-        } else {
-            item.style.display = 'none';
         }
-    });
-}
 
-function updateList(textFilter = '', genFilter = 'All') {
-    const listId = 'pokemon-list';
-    const ul = document.getElementById(listId);
-    if (!ul) return; // Encerra a função se o elemento da lista não for encontrado
-
-    ul.innerHTML = ''; // Limpa a lista atual
-
-    // Filtra primeiro por geração, se necessário
-    let filteredGenerations = genFilter === 'All' ? Object.values(generations_dict) : [generations_dict[genFilter]];
-
-    // Combina todos os arrays de nomes em um único array e filtra pelo texto
-    filteredGenerations.flat()
-        .filter(name => name.toLowerCase().includes(textFilter.toLowerCase()))
-        .forEach(name => {
-            // Criação e adição de elementos à lista como antes
-            const div = document.createElement('div');
-            div.className = 'custom-radio';
-            const input = document.createElement('input');
-            input.type = 'radio';
-            input.id = name;
-            input.name = 'selected_pokemon';
-            input.value = name;
-            const label = document.createElement('label');
-            label.htmlFor = name;
-            label.textContent = name;
-
-            div.appendChild(input);
-            div.appendChild(label);
-            ul.appendChild(div);
+        confirmYes.addEventListener('click', function() {
+            window.location.href = currentLink;
         });
-}
 
-// Função para inicializar as listas na primeira vez que a página carrega
-// Função para inicializar as listas na primeira vez que a página carrega
-function initializeLists() {
-    updateList(); // Inicializa com todos os itens
-    // Configura o filtro de geração
+        confirmNo.addEventListener('click', function() {
+            confirmModal.style.display = 'none';
+            currentLink = null;
+        });
+    });
+
+    // When the generation filter changes, update the list with both filters
     document.getElementById('generation-filter').addEventListener('change', function() {
-        const gen = this.value;
-        const globalFilter = document.getElementById('global-filter').value;
-        updateList(globalFilter, gen); // Atualiza a lista com o filtro global e de geração
+        const genFilter = this.value;
+        const textFilter = document.getElementById('global-filter').value;
+        updateList(textFilter, genFilter);
     });
-}
 
-function switchPokemonSprite(newSpriteSrc) {
-    var pokemonSprite = document.getElementById('pokemonImage');
-    pokemonSprite.src = newSpriteSrc;
-    setTimeout(() => {
-                       console.log('Switching sprite...'); 
-                     }, 500);
-}
+    // When the text filter changes, update the list with both filters
+    document.getElementById('global-filter').addEventListener('input', function() {
+        const textFilter = this.value;
+        const genFilter = document.getElementById('generation-filter').value;
+        updateList(textFilter, genFilter);
+    });
 
-function checkWinner(pkmnElem) {
-    
-    var selectedPkmn = pkmnElem.value;
-    var pokemonImage = document.getElementById('pokemonImage');
-    var pokemonName = pokemonImage.getAttribute('name');
-    var pokemonSprite = pokemonImage.getAttribute('sprite');
+    // Initialize the list on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const textFilter = document.getElementById('global-filter').value;
+        const genFilter = document.getElementById('generation-filter').value;
+        updateList(textFilter, genFilter);
+    });
 
-    console.log("novo sprite: ", pokemonSprite)
-    
-    if (selectedPkmn == pokemonName) {
-        userAction(true);
-        score += 1;
-        document.getElementById('score').textContent = "Score: " + score;
+    // Initialize the list on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeLists(); 
+    });
 
-        Promise.all([
-            switchPokemonSprite(pokemonSprite)
-        ]).then(() => {
-            document.getElementById('nome_pkmn').textContent = pokemonName;
-            setTimeout(() => {
-                ressortearPokemons();
-            }, 1500);
-        });
+    // Logic for form submission
+    document.getElementById('gameForm').onsubmit = function(event) {
+        event.preventDefault();
 
-    } else {
-        userAction(false);
-        score = 0; 
-        Promise.all([
-            switchPokemonSprite(pokemonSprite)
-        ]).then(() => {
-            document.getElementById('nome_pkmn').textContent = pokemonName;
-            setTimeout(() => {
-                postToURL("/whos_that_pkmn", { game_end_arg: "end" });
-            }, 1500);
+        var selectedPokemon = document.querySelector('input[name="selected_pokemon"]:checked');
+        var filterInput = document.getElementById('global-filter');
+        var genFilter = document.getElementById('generation-filter');
+        if(selectedPokemon){
+            filterInput.value = '';
+            genFilter.value = 'All';
+            updateList();
+            checkWinner(selectedPokemon);
+        } else {
+            alert('No Pokémon selected');
+            event.preventDefault(); // Prevents the form from being submitted if no Pokémon is selected
+        }
+    };
+
+    // Function to filter all lists based on the value of the global filter
+    function filterAllLists() {
+        var filterValue = document.getElementById('global-filter').value.toLowerCase();
+        var listItems = document.querySelectorAll('.scrollable-list .pokemon-list');
+
+        listItems.forEach(function(item) {
+            var text = item.textContent.toLowerCase();
+            if (text.includes(filterValue)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
         });
     }
-}
 
-function ressortearPokemons() {
-    fetch(`/resort_pokemons_wtp`)
-    .then(response => response.json())
-    .then(data => {
-        if (data.game_end == 'True') {
+    function updateList(textFilter = '', genFilter = 'All') {
+        const listId = 'pokemon-list';
+        const ul = document.getElementById(listId);
+        if (!ul) return; // Exits the function if the list item is not found
+
+        ul.innerHTML = ''; // Clears the current list
+
+        // Filters by generation first, if necessary
+        let filteredGenerations = genFilter === 'All' ? Object.values(generations_dict) : [generations_dict[genFilter]];
+
+        // Combines all arrays of id_names into a single array and filters by text
+        filteredGenerations.flat()
+            .filter(name => name.toLowerCase().includes(textFilter.toLowerCase()))
+            .forEach(name => {
+                // Creation and addition of list elements as before
+                const div = document.createElement('div');
+                div.className = 'custom-radio';
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.id = name;
+                input.name = 'selected_pokemon';
+                input.value = name;
+                const label = document.createElement('label');
+                label.htmlFor = name;
+                label.textContent = name;
+
+                div.appendChild(input);
+                div.appendChild(label);
+                ul.appendChild(div);
+            });
+    }
+
+    // Function to initialize the lists the first time the page loads
+    function initializeLists() {
+        updateList(); // Initializes with all items
+        // Sets up the generation filter
+        document.getElementById('generation-filter').addEventListener('change', function() {
+            const gen = this.value;
+            const globalFilter = document.getElementById('global-filter').value;
+            updateList(globalFilter, gen); // Updates the list with the global and generation filters
+        });
+    }
+
+    // Function to switch Pokemon Sprite 
+    function switchPokemonSprite(newSpriteSrc) {
+        var pokemonSprite = document.getElementById('pokemonImage');
+        pokemonSprite.src = newSpriteSrc;
+        setTimeout(() => {
+                        console.log('Switching sprite...'); 
+                        }, 500);
+    }
+
+    // Function to check if user got the right answer
+    function checkWinner(pkmnElem) {
+        
+        var selectedPkmn = pkmnElem.value;
+        var pokemonImage = document.getElementById('pokemonImage');
+        var pokemonName = pokemonImage.getAttribute('id_name');
+        var pokemonSprite = pokemonImage.getAttribute('sprite');
+
+        if (selectedPkmn == pokemonName) {
+            userAction(true);
+            score += 1;
+            document.getElementById('score').textContent = "Score: " + score;
+
             Promise.all([
                 switchPokemonSprite(pokemonSprite)
             ]).then(() => {
-                document.getElementById('nome_pkmn').textContent = data.nome;
-                postToURL("/whos_that_pkmn", { game_end_arg: "end_full" });
+                document.getElementById('nome_pkmn').textContent = pokemonName;
+                setTimeout(() => {
+                    redrawPokemons();
+                }, 1500);
+            });
+
+        } else {
+            userAction(false);
+            score = 0; 
+            Promise.all([
+                switchPokemonSprite(pokemonSprite)
+            ]).then(() => {
+                document.getElementById('nome_pkmn').textContent = pokemonName;
+                setTimeout(() => {
+                    postToURL("/whos_that_pkmn", { game_end_arg: "end" });
+                }, 1500);
             });
         }
-        else{
-    
-            const newPokemonDiv = document.getElementById('pkmn');
+    }
 
-            // Update the Pokémon based on the div ID
-            document.getElementById('nome_pkmn').textContent = '?';
-            newPokemonDiv.querySelector('img').src = data.shadow_sprite;
-            newPokemonDiv.querySelector('img').setAttribute('name', data.nome);
-            newPokemonDiv.querySelector('img').setAttribute('sprite', data.sprite);
+    // Function to request new Pokemon to server
+    function redrawPokemons() {
+        // Request server to redraw Pokemon
+        fetch(`/redraw_pokemons_wtp`)
+        .then(response => response.json())
+        .then(data => {
+            // Check if Game ended
+            if (data.game_end == 'True') {
+                Promise.all([
+                    switchPokemonSprite(pokemonSprite)
+                ]).then(() => {
+                    document.getElementById('nome_pkmn').textContent = data.nome;
+                    postToURL("/whos_that_pkmn", { game_end_arg: "end_full" });
+                });
+            }
+            else{
+                // Current Pokemon Element
+                const newPokemonDiv = document.getElementById('pkmn');
 
-
-        }
-    });
-}
+                // Update the Pokémon based on the div ID
+                document.getElementById('nome_pkmn').textContent = '?';
+                newPokemonDiv.querySelector('img').src = data.shadow_sprite;
+                newPokemonDiv.querySelector('img').setAttribute('id_name', data.id_name);
+                newPokemonDiv.querySelector('img').setAttribute('sprite', data.sprite);
+            }
+        });
+    }
 </script>
 {% endblock %}

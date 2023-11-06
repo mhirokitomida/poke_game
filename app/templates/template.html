@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,57 +10,56 @@
     </head>
 
     <body>
-        
-        {% block conteudo %}{% endblock %}
+        {% block content%}{% endblock %}
 
-        <footer class="rodape">
+        <footer class="footer">
             <p>This website is not endorsed or affiliated with the Pokémon or Nintendo. Additionally, this site is not endorsed by Pokémon or by it's creators.</p>
         </footer>
 
         <script>
+            // Function to check user input in the toogle button (day/night switch)
             document.addEventListener('DOMContentLoaded', function() {
             const toggleInput = document.getElementById('toggleBackground');
 
-            // Verifica o estado armazenado ao carregar a página
+            // Check the stored state when loading the page
             const toggleState = localStorage.getItem('toggleState');
             if (toggleState === 'on') {
                 toggleInput.checked = true;
-                document.querySelector('.apresentacao').style.backgroundImage = 'url("/static/assets/night.jpg")';
+                document.querySelector('.main_content').style.backgroundImage = 'url("/static/assets/night.jpg")';
             } else {
                 toggleInput.checked = false;
-                document.querySelector('.apresentacao').style.backgroundImage = 'url("/static/assets/day.jpg")';
+                document.querySelector('.main_content').style.backgroundImage = 'url("/static/assets/day.jpg")';
             }
 
-            // Atualiza o localStorage quando o toggle for alterado
+            // Update the localStorage when the toggle is changed
             toggleInput.addEventListener('change', function() {
                 if (toggleInput.checked) {
                     localStorage.setItem('toggleState', 'on');
-                    document.querySelector('.apresentacao').style.backgroundImage = 'url("/static/assets/night.jpg")';
+                    document.querySelector('.main_content').style.backgroundImage = 'url("/static/assets/night.jpg")';
                 } else {
                     localStorage.setItem('toggleState', 'off');
-                    document.querySelector('.apresentacao').style.backgroundImage = 'url("/static/assets/day.jpg")';
+                    document.querySelector('.main_content').style.backgroundImage = 'url("/static/assets/day.jpg")';
                 }
             });
         });
 
+        // Function to flash green/red for the user's correct/incorrect answer
         function userAction(isCorrect) {
-            const apresentacao = document.querySelector('.apresentacao');
-
+            const main_content = document.querySelector('.main_content');
             if (isCorrect) {
-                console.log("Acertou!");
-                apresentacao.classList.add('correct');
+                main_content.classList.add('correct');
                 setTimeout(() => {
-                    apresentacao.classList.remove('correct');
+                    main_content.classList.remove('correct');
                 }, 500);
             } else {
-                console.log("Errou!");
-                apresentacao.classList.add('wrong');
+                main_content.classList.add('wrong');
                 setTimeout(() => {
-                    apresentacao.classList.remove('wrong');
+                    main_content.classList.remove('wrong');
                 }, 500);
             }
         }
 
+        // Function to send POST request to the specified 'url' with the 'data' as form fields.
         function postToURL(url, data) {
             var form = document.createElement('form');
             form.method = 'POST';
@@ -77,9 +76,6 @@
             document.body.appendChild(form);
             form.submit();
         }
-  
-        </script>
-            
+        </script>         
     </body>
-
 </html>
