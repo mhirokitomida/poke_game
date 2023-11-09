@@ -26,14 +26,14 @@
     </div>
 
     <section class="pokemon_battle">
-        <div class="pokemon" id="pkmn-1"> 
-            <h2 class="main_content_title">{{ pkmn_1.nome }}</h2>
+        <div class="pokemon_hl" id="pkmn-1"> 
+            <h2 class="main_content_title">{{ pkmn_1.name }}</h2>
             <img src="{{ pkmn_1.sprite }}" alt="Pokemon 1" data-stat="{{ pkmn_1.stat }}">
             <h3 class="main_content_title" id="stat-pkmn-1"></h3>
         </div>
         <h2 id="vs">VS</h2> 
-        <div class="pokemon" id="pkmn-2"> 
-            <h2 class="main_content_title">{{ pkmn_2.nome }}</h2>
+        <div class="pokemon_hl" id="pkmn-2"> 
+            <h2 class="main_content_title">{{ pkmn_2.name }}</h2>
             <img src="{{ pkmn_2.sprite }}" alt="Pokemon 2" data-stat="{{ pkmn_2.stat }}">
             <h3 class="main_content_title" id="stat-pkmn-2"></h3>
         </div>
@@ -203,12 +203,12 @@
                     [document.getElementById('pkmn-1'), document.getElementById('pkmn-2')];
 
                     // New Pokemon
-                    newPokemonDiv.querySelector('h2').textContent = data.novo_pokemon.nome;
-                    newPokemonDiv.querySelector('img').src = data.novo_pokemon.sprite;
-                    newPokemonDiv.querySelector('img').setAttribute('data-stat', data.novo_pokemon.stat);
+                    newPokemonDiv.querySelector('h2').textContent = data.new_pokemon.name;
+                    newPokemonDiv.querySelector('img').src = data.new_pokemon.sprite;
+                    newPokemonDiv.querySelector('img').setAttribute('data-stat', data.new_pokemon.stat);
 
                     // Maintain Pokemon
-                    oldPokemonDiv.querySelector('h2').textContent = data.old_pokemon.nome;
+                    oldPokemonDiv.querySelector('h2').textContent = data.old_pokemon.name;
                     oldPokemonDiv.querySelector('img').src = data.old_pokemon.sprite;
                     oldPokemonDiv.querySelector('img').setAttribute('data-stat', data.old_pokemon.stat);
 

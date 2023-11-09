@@ -1,0 +1,29 @@
+
+.main_content.correct::before, .main_content.wrong::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.main_content.correct::before {
+    animation: flashGreen 0.5s forwards;
+}
+
+.main_content.wrong::before {
+    animation: flashRed 0.5s forwards;
+}
+
+@keyframes flashGreen {
+    50% { background-color: rgba(0, 255, 0, 0.6); }
+    100% { background-color: transparent; }
+}
+
+@keyframes flashRed {
+    50% { background-color: rgba(255, 0, 0, 0.6); }
+    100% { background-color: transparent; }
+}

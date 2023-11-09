@@ -25,9 +25,9 @@
         <h2 class="main_content_text" id="high_score">High Score: {{high_score_wtp}}</h2>
     </div>
 
-    <section class="pokemon_v2" id="pkmn">
+    <section class="pokemon_wtp" id="pkmn">
         <div class = 'guess_pkmn'> 
-            <h2 class="main_content_text" id="nome_pkmn">?</h2>
+            <h2 class="main_content_text" id="name_pkmn">?</h2>
             <img src="{{ pkmn.shadow_sprite }}" alt="Pokemon" id_name="{{ pkmn.id_name }}" id="pokemonImage" sprite="{{pkmn.sprite}}">
         </div>
         <div class="forms">
@@ -226,9 +226,9 @@
             Promise.all([
                 switchPokemonSprite(pokemonSprite)
             ]).then(() => {
-                document.getElementById('nome_pkmn').textContent = pokemonName;
+                document.getElementById('name_pkmn').textContent = pokemonName;
                 setTimeout(() => {
-                    redrawPokemons();
+                    redrawPokemons(pkmnElem);
                 }, 1500);
             });
 
@@ -238,7 +238,7 @@
             Promise.all([
                 switchPokemonSprite(pokemonSprite)
             ]).then(() => {
-                document.getElementById('nome_pkmn').textContent = pokemonName;
+                document.getElementById('name_pkmn').textContent = pokemonName;
                 setTimeout(() => {
                     postToURL("/whos_that_pkmn", { game_end_arg: "end" });
                 }, 1500);
@@ -247,7 +247,12 @@
     }
 
     // Function to request new Pokemon to server
-    function redrawPokemons() {
+    function redrawPokemons(pkmnElem) {
+        var selectedPkmn = pkmnElem.value;
+        var pokemonImage = document.getElementById('pokemonImage');
+        var pokemonName = pokemonImage.getAttribute('id_name');
+        var pokemonSprite = pokemonImage.getAttribute('sprite');
+
         // Request server to redraw Pokemon
         fetch(`/redraw_pokemons_wtp`)
         .then(response => response.json())
@@ -257,7 +262,7 @@
                 Promise.all([
                     switchPokemonSprite(pokemonSprite)
                 ]).then(() => {
-                    document.getElementById('nome_pkmn').textContent = data.nome;
+                    document.getElementById('name_pkmn').textContent = pokemonName;
                     postToURL("/whos_that_pkmn", { game_end_arg: "end_full" });
                 });
             }
@@ -266,7 +271,7 @@
                 const newPokemonDiv = document.getElementById('pkmn');
 
                 // Update the Pokémon based on the div ID
-                document.getElementById('nome_pkmn').textContent = '?';
+                document.getElementById('name_pkmn').textContent = '?';
                 newPokemonDiv.querySelector('img').src = data.shadow_sprite;
                 newPokemonDiv.querySelector('img').setAttribute('id_name', data.id_name);
                 newPokemonDiv.querySelector('img').setAttribute('sprite', data.sprite);

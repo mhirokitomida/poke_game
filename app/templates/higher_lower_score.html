@@ -30,8 +30,8 @@
         </div>
         {% if pkmn_list %}
         <h2 class="main_content_title">See all your correct answers below:</h2>
-        <div class="scrollable">
-            <table class="battle_table">
+        <div class="scrollable-table">
+            <table class="record_history">
                 <thead class="thead-default">
                     <tr>
                         <th>Stat</th>
@@ -43,8 +43,8 @@
                     {% for battle in pkmn_list %}
                     <tr>
                         <td>{{ battle['stat'] }}</td>
-                        <td>{{ battle['nome1'] }} (stat: {{ battle['stat1'] }})</td>
-                        <td>{{ battle['nome2'] }} (stat: {{ battle['stat2'] }})</td>
+                        <td>{{ battle['name1'] }} (stat: {{ battle['stat1'] }})</td>
+                        <td>{{ battle['name2'] }} (stat: {{ battle['stat2'] }})</td>
                     </tr>
                     {% endfor %}
                 </tbody>

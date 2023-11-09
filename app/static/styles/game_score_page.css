@@ -1,0 +1,22 @@
+.thead-default{
+    font-weight: bold;
+    background-color: var(--cor-azul);
+}
+
+.record_history{
+    background-color: var(--cor-terciaria);
+    font-size: 3rem;
+    border-collapse: collapse;
+    border-spacing: 500px 50px;
+}
+
+.record_history th, .record_history td {
+    border: 5px solid #000;  
+    padding: 1rem;  
+}
+
+.scrollable-table {
+    max-height: 26rem;  
+    overflow-y: auto;  
+    overflow-x: auto;  
+}

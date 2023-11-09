@@ -1,0 +1,22 @@
+@import url("header_nav_menu.css");
+@import url("header_day_night_switch.css");
+
+.header{
+    padding: 2% 2%;
+    background-color: var(--cor-vermelho);
+}
+
+.header_menu{
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    gap: 5rem;
+}
+
+.header_menu_link{
+    font-family: var(--fonte-secundaria);
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--cor-amarelo);
+    text-decoration: none;
+}

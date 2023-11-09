@@ -1,0 +1,50 @@
+.main_content{
+    position: relative;
+    background-size: 100% 100%;
+    background-image: url("/static/assets/day.jpg");
+    padding: 6rem 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--fonte-primaria);
+    color:var(--cor-amarelo);
+    -webkit-text-stroke: 0.2rem var(--cor-azul-navy);
+    gap: 4rem;
+    font-size: 4rem;
+    text-align: center;
+}
+
+.main_content.night {
+    background-image: url("/static/assets/night.jpg");
+}
+
+
+.main_content_links{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.main_content_links_item{
+    background-color: var(--cor-vermelho);
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    border: 0.4rem solid var(--cor-preto);
+    width: 30rem;
+    text-align: center;
+    border-radius: 1rem;
+    font-size: 2.5rem;
+    padding: 1rem 0;
+    text-decoration: none;
+    color: var(--cor-cinza);
+    font-family: var(--fonte-primaria);
+    -webkit-text-stroke: 0.2rem var(--cor-preto);
+}
+
+.main_content_links_item:hover{
+    background-color: var(--cor-hover);
+}
