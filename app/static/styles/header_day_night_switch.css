@@ -1,3 +1,6 @@
+:root {
+    --toggle-size: 3rem;
+}
 
 .toggle_menu {
     float: right;
@@ -8,15 +11,15 @@
 
 .toggle_icon {
     width: auto; 
-    height: 5rem;
+    height: calc(var(--toggle-size) * 1.2);
 }
 
 .toggle-btn {
     position: relative;
-    width: 8rem;
-    height: 4rem;
+    width: calc(var(--toggle-size) * 2);
+    height: var(--toggle-size);
     display: inline-block;
-    margin-right: 0.5rem;
+    margin-right: calc(var(--toggle-size) * 0.1);
 }
 
 .toggle-btn input {
@@ -27,7 +30,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: var(--cor-dia);
+    background-color: var(--day-color);
     border-radius: 2rem;
     cursor: pointer;
     transition: 0.4s;
@@ -36,17 +39,17 @@
 .slider:before {
     content: "";
     position: absolute;
-    width: 4rem;
-    height: 4rem;
+    width: var(--toggle-size);
+    height: var(--toggle-size);
     background-color: white;
     border-radius: 50%;
     transition: 0.4s;
 }
 
 input:checked + .slider {
-    background-color: var(--cor-noite);
+    background-color: var(--night-color);
 }
 
 input:checked + .slider:before {
-    transform: translateX(4rem);
+    transform: translateX(var(--toggle-size));
 }

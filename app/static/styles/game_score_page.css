@@ -1,10 +1,10 @@
 .thead-default{
     font-weight: bold;
-    background-color: var(--cor-azul);
+    background-color: var(--blue-color);
 }
 
 .record_history{
-    background-color: var(--cor-terciaria);
+    background-color: var(--tertiary-color);
     font-size: 3rem;
     border-collapse: collapse;
     border-spacing: 500px 50px;

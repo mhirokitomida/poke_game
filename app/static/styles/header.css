@@ -2,21 +2,26 @@
 @import url("header_day_night_switch.css");
 
 .header{
-    padding: 2% 2%;
-    background-color: var(--cor-vermelho);
+    height: auto;
+    background-color: var(--red-color);
+    padding-right: var(--default-padding);
 }
 
 .header_menu{
     display: flex;
     justify-content: space-between; 
     align-items: center; 
-    gap: 5rem;
 }
 
 .header_menu_link{
-    font-family: var(--fonte-secundaria);
-    font-size: 2.5rem;
+    font-family: var(--secondary-font);
+    font-size: var(--default-font-size-title);
     font-weight: 600;
-    color: var(--cor-amarelo);
+    color: var(--yellow-color);
     text-decoration: none;
+    padding: var(--default-padding);
+}
+
+.header_menu_link_selected{
+    background-color: var(--hover-color);
 }

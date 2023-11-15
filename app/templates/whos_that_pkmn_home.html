@@ -5,7 +5,7 @@
             <div class = "nav_menu">
                 <a class="header_menu_link" href="{{ url_for('home.index') }}">Home</a>
                 <a class="header_menu_link" href="{{ url_for('higher_lower.home') }}">Higher Lower Game</a>
-                <p class="header_menu_link">Who's that Pokémon</p>
+                <p class="header_menu_link header_menu_link_selected">Who's that Pokémon</p>
             </div>
             <div class = "toogle_menu">
                 <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
@@ -18,7 +18,7 @@
         </nav>
     </header>
     <main class="main_content">
-        <h1 class="main_content_title">Higher Lower Game</h1>
+        <h1 class="main_content_title">Who's That Pokémon Game</h1>
         <h2 class="main_content_title">Rules</h2>
         <p class="main_content_text">
             Your task is to guess the Pokémon based on its shadow.
@@ -77,30 +77,6 @@
         </div>
     </main>
 
-    <script>
-        // Submit forms with settings
-        document.addEventListener('DOMContentLoaded', function() {
-            // Select all Generations
-            const selectAllGenCheckbox = document.getElementById('select-all-gen');
-            const checkboxesgen = document.querySelectorAll('input[name="gen[]"]');
-            selectAllGenCheckbox.addEventListener('change', function(e) {
-                checkboxesgen.forEach(checkboxesgen => {
-                    checkboxesgen.checked = selectAllGenCheckbox.checked;
-                });
-            });
-    
-            // Submit form with selected Generations
-            const form = document.getElementById('gameForm');
-            form.addEventListener('submit', function(e) {
-                const gensChecked = document.querySelectorAll('input[name="gen[]"]:checked').length;
-    
-                // Check if at least one value in Generations is selected
-                if (gensChecked === 0) {
-                    e.preventDefault(); 
-                    alert('Please select at least one value in Generations!!!');
-                }
-            });
-        });
-    </script>
+    <script src="{{ url_for('static', filename='js/whos_that_pkmn_home.js') }}"></script>
     
 {% endblock %}

@@ -14,7 +14,7 @@
 }
 
 #confirmModal .modal-content {
-    background-color: var(--cor-cinza);
+    background-color: var(--gray-color);
     margin: 15% auto;
     padding: 20px;
     width: 60%;

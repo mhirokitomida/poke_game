@@ -8,29 +8,32 @@
 @import url("styles/footer.css");
 
 :root {
-    --cor-primaria: #000000;
-    --cor-secundaria: #F6F6F6;
-    --cor-terciaria: #22D4FD;
-    --cor-hover: #272727;
-    --cor-amarelo: #FFCB05;
-    --cor-azul: #3D7DCA;
-    --cor-azul-navy: #003A70;
-    --cor-vermelho: #f00000;
-    --cor-preto: #222224;
-    --cor-cinza: #f0f0f0;
-    --cor-dia:#FFCC33;
-    --cor-noite:#131862;
+    --primary-color: #000000;
+    --secondary-color: #F6F6F6;
+    --tertiary-color: #22D4FD;
+    --hover-color: #A40000;
+    --yellow-color: #FFCB05;
+    --blue-color: #3D7DCA;
+    --navy-blue-color: #003A70;
+    --red-color: #f00000;
+    --black-color: #222224;
+    --gray-color: #f0f0f0;
+    --day-color:#FFCC33;
+    --night-color:#131862;
 
+    --primary-font: 'Pokemon Solid', sans-serif;
+    --secondary-font: 'Pokemon Hollow', sans-serif;
+    --tertiary-font: 'Krona One', sans-serif;
 
-    --fonte-primaria: 'Pokemon Solid', sans-serif;
-    --fonte-secundaria: 'Pokemon Hollow', sans-serif;
-    --fonte-terciaria: 'Krona One', sans-serif;
+    --default-font-size-title: 2rem;
+    --default-font-size-text: 1.5rem;
+    --default-padding: 1rem;
+    --default-gap: 2rem;
 }
 
 body{
-    width: auto;
     box-sizing: border-box;
-    background-color: var(--cor-preto);
-    color: var(--cor-secundaria);
+    background-color: var(--black-color);
+    color: var(--secondary-color);
     font-size: 16px;
 }

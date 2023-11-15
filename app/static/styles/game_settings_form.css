@@ -23,7 +23,7 @@ fieldset {
 }
 
 .scrollable-list {
-    background-color: var(--cor-terciaria);
+    background-color: var(--tertiary-color);
     height: 10rem; 
     overflow-y: auto;
     border: 0.5rem solid #ccc;
@@ -60,12 +60,12 @@ input[type="checkbox"]:checked + label::before {
 }
 
 #submit_forms{
-    color: var(--cor-amarelo);
+    color: var(--yellow-color);
     background-color: rgb(204, 204, 204);
     cursor: pointer; 
     font-size: 3rem;
     padding: 1rem;
-    border: 0.2rem solid var(--cor-azul);
+    border: 0.2rem solid var(--blue-color);
 }
 
 #submit_forms:hover {
