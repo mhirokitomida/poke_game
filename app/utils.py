@@ -49,7 +49,7 @@ def randint_exclude(gens, exclude):
 def sort_pkmn(data, random_stat = all_attributes):
     # Draw a random Pokemon ID
     id_pkmn = randint_exclude(session.get('gen', []), session.get('list_id', []))
-    print("id: ", id_pkmn)
+
     # Put ID in the exclusion list
     session['list_id'].append(id_pkmn)
     session['list_id'] = list(set(session['list_id']))

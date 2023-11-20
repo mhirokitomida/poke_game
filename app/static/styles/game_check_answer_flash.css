@@ -1,4 +1,3 @@
-
 .main_content.correct::before, .main_content.wrong::before {
     content: "";
     position: absolute;

@@ -1,3 +1,5 @@
+import os
+
 class Config:
     SECRET_KEY = 'poke_game'
     GENERATIONS = [
@@ -14,3 +16,5 @@ class Config:
 
     ALL_GENERATIONS = ['generation-i', 'generation-ii', 'generation-iii', 'generation-iv', 'generation-v', 'generation-vi', 'generation-vii', 'generation-viii']
     ALL_ATTRIBUTES = ['Height (cm)', 'Weight (Kg)', 'HP', 'Attack', 'Defense', 'Sp. Attack', 'Sp. Defense', 'Speed', 'Total']
+
+    DIR_PATH = os.path.dirname(os.path.abspath(__file__))

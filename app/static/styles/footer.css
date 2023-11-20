@@ -1,10 +1,12 @@
 .footer{
     height: auto;
-    color: var(--primary-color);
+    width: auto;
     background-color: var(--gray-color);
-    padding: calc(var(--default-padding) * 1.5);
-    text-align: center;
     font-family: var(--tertiary-font);
-    font-size: calc(var(--default-font-size-text) * 0.5);
+    color: var(--primary-color);
+    font-size: 1rem;
     font-weight: 400;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin: auto;
 }

@@ -19,41 +19,29 @@
 </header>
 
 <main class="main_content">
-    <h1 class="main_content_title">Who's that Pókemon? </h1>
-    <div class="score-container">
-        <h2 class="main_content_text" id="score">Score: 0</h2>
-        <h2 class="main_content_text" id="high_score">High Score: {{high_score_wtp}}</h2>
-    </div>
-
     <section class="pokemon_wtp" id="pkmn">
         <div class = 'guess_pkmn'> 
             <h2 class="main_content_text" id="name_pkmn">?</h2>
             <img src="{{ pkmn.shadow_sprite }}" alt="Pokemon" id_name="{{ pkmn.id_name }}" id="pokemonImage" sprite="{{pkmn.sprite}}">
         </div>
-        <div class="forms">
-            <form action="/whos_that_pkmn" method="post" id="gameForm">
-                <div class = 'guess_panel'>
-                    <div class = 'guess_pkmn_list'>
-                        <h2> Choose One Pokemon from the list below</h2>
-                        <select id="generation-filter">
-                            <option value="All">All Generations</option>
-                            {% for gen in generations_dict.keys() %}
-                            <option value="{{ gen }}">{{ gen }}</option>
-                            {% endfor %}
-                        </select>
-                        <input type="text" id="global-filter" placeholder="Filter Pokémon Name">
-                        <div class="scrollable-list" id="pokemon-list">
-                            <!-- items will be populated by JavaScript -->
-                        </div>
-                        
-                        <div class="submit-container">
-                            <input id='submit_forms' type="submit" value="Guess">
-                        </div>
-                    </div>
-                 
-                </div>
-            </form>
-        </div>
+
+        <form action="/whos_that_pkmn" method="post" id="gameForm" class="forms_guess">
+            <div class="score-container">
+                <h2 class="main_content_text" id="score">Score: 0</h2>
+                <h2 class="main_content_text" id="high_score">High Score: {{high_score_wtp}}</h2>
+            </div>
+            <select id="generation-filter">
+                <option value="All">All Generations</option>
+                {% for gen in generations_dict.keys() %}
+                <option value="{{ gen }}">{{ gen }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" id="global-filter" placeholder="Filter Pokémon Name">
+            <div class="scrollable-list" id="pokemon-list">
+                <!-- items will be populated by JavaScript -->
+            </div>
+            <input type="submit" value="Guess">
+        </form>
     </section>
     
     <div id="confirmModal" class="modal">

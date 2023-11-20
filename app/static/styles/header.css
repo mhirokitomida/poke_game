@@ -3,8 +3,10 @@
 
 .header{
     height: auto;
+    width: auto;
     background-color: var(--red-color);
-    padding-right: var(--default-padding);
+    padding-right: 1rem;
+    margin: auto;
 }
 
 .header_menu{
@@ -15,11 +17,11 @@
 
 .header_menu_link{
     font-family: var(--secondary-font);
-    font-size: var(--default-font-size-title);
+    font-size: 1.6rem;
     font-weight: 600;
     color: var(--yellow-color);
     text-decoration: none;
-    padding: var(--default-padding);
+    padding: 0 1rem;
 }
 
 .header_menu_link_selected{

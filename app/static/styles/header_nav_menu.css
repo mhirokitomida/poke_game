@@ -1,5 +1,5 @@
 .nav_menu{
     display: flex;
     align-items: center;
-    gap: var(--default-gap);
+    gap: 2rem;
 }

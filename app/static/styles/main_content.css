@@ -1,44 +1,61 @@
 .main_content{
-    height: 30rem;
+    position: relative;
+    height: auto;
+    width: auto;
     background-size: 100% 100%;
     background-image: url("/static/assets/day.jpg");
-    padding: calc(var(--default-padding)*2.5) 0;
+    padding: 3rem 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    font-family: var(--primary-font);
-    color:var(--yellow-color);
-    -webkit-text-stroke: calc(var(--default-font-size-title) * 0.1) var(--navy-blue-color);
-    gap: calc(var(--default-gap)*0.5);
-    font-size: var(--default-font-size-title);
+    justify-content: space-evenly;
     text-align: center;
+    margin: auto;
+
+    font-family: var(--primary-font);
+    font-size: 2.5rem;
+    color:var(--yellow-color);
+    -webkit-text-stroke: 0.25rem var(--navy-blue-color);
 }
 
 .main_content.night {
     background-image: url("/static/assets/night.jpg");
 }
 
+.main_content_title{
+    font-family: var(--primary-font);
+    font-size: 2.5rem;
+    color:var(--yellow-color);
+    -webkit-text-stroke: 0.25rem var(--navy-blue-color);
+}
+
+.main_content_text{
+    font-family: var(--primary-font);
+    font-size: 2rem;
+    color:var(--yellow-color);
+    -webkit-text-stroke: 0.2rem var(--navy-blue-color);
+}
+
 .main_content_links{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: calc(var(--default-gap)*3);
+    gap: 6rem;
 }
 
 .main_content_links_item{
     background-color: var(--red-color);
     display: flex;
     justify-content: center;
-    border: calc(var(--default-font-size-title) * 0.2) solid var(--black-color);
-    width: calc(var(--default-font-size-title) * 10);
+    border: 0.5rem solid var(--black-color);
+    width: 25rem;
     text-align: center;
     border-radius: 1rem;
-    font-size: var(--default-font-size-text);
+    font-size: 2rem;
     text-decoration: none;
     color: var(--gray-color);
     font-family: var(--primary-font);
-    -webkit-text-stroke: calc(var(--default-font-size-text) * 0.1) var(--black-color);
+    -webkit-text-stroke: 0.2rem var(--black-color);
 }
 
 .main_content_links_item:hover{

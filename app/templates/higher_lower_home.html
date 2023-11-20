@@ -27,102 +27,100 @@
             Both the attribute and Pokémon choices are guided by your game settings.  
             Aim to consecutively choose correctly and see how many you get right in a row!
         </p>
-        <div class="forms">
+        
+        <form action="/higher_lower" method="post" class="forms" id = "gameForm">
             <h2 class="main_content_title">Settings</h2>
-            <form action="/higher_lower" method="post" id="gameForm">
-                <div class="list-container">
-                    <fieldset>
-                        <legend class = 'legend_selection'>Select the Generations</legend>
-                        <div class="scrollable-list">
-                            <div class="item-list">
-                                <input type="checkbox" id="select-all-gen" name="select-all-gen" value="select-all-gen">
-                                <label for="select-all-gen">All Gen's</label>
-                            </div>
-                            <div class="item-list">
-                                <input type="checkbox" id="gen-I" name="gen[]" value="generation-i">
-                                <label for="gen-I">Gen I</label>
-                            </div>
-                            <div class="item-list">
-                                <input type="checkbox" id="gen-II" name="gen[]" value="generation-ii">
-                                <label for="gen-II">Gen II</label>
-                            </div>
-                            <div class="item-list">
-                                <input type="checkbox" id="gen-III" name="gen[]" value="generation-iii">
-                                <label for="gen-III">Gen III</label>
-                            </div>
-                            <div class="item-list">
-                                <input type="checkbox" id="gen-IV" name="gen[]" value="generation-iv">
-                                <label for="gen-IV">Gen IV</label>
-                            </div>
-                            <div class="item-list">
-                                <input type="checkbox" id="gen-V" name="gen[]" value="generation-v">
-                                <label for="gen-V">Gen V</label>
-                            </div>
-                            <div class="item-list">
-                                <input type="checkbox" id="gen-VI" name="gen[]" value="generation-vi">
-                                <label for="gen-VI">Gen VI</label>
-                            </div>
-                            <div class="item-list">
-                                <input type="checkbox" id="gen-VII" name="gen[]" value="generation-vii">
-                                <label for="gen-VII">Gen VII</label>
-                            </div>
-                            <div class="item-list">
-                                <input type="checkbox" id="gen-VIII" name="gen[]" value="generation-viii">
-                                <label for="gen-VIII">Gen VIII</label>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                <fieldset>
-                    <legend class = 'legend_selection'>Select the Attributes</legend>
-                    <div class="scrollable-list">
-                        <div class="item-list">
-                            <input type="checkbox" id="select-all-attributes" name="select-all-attributes" value="select-all-attributes">
-                            <label for="select-all-attributes">All Attributes</label>
-                        </div>
-                        <div class="item-list">
-                            <input type="checkbox" id="attribute-height" name="attributes[]" value="Height (cm)">
-                            <label for="attribute-height">Height (cm)</label>
-                        </div>
-                        <div class="item-list">
-                            <input type="checkbox" id="attribute-weight" name="attributes[]" value="Weight (Kg)">
-                            <label for="attribute-weight">Weight (Kg)</label>
-                        </div>
-                        <div class="item-list">
-                            <input type="checkbox" id="attribute-hp" name="attributes[]" value="HP">
-                            <label for="attribute-hp">HP</label>
-                        </div>
-                        <div class="item-list">
-                            <input type="checkbox" id="attribute-attack" name="attributes[]" value="Attack">
-                            <label for="attribute-attack">Attack</label>
-                        </div>
-                        <div class="item-list">
-                            <input type="checkbox" id="attribute-defense" name="attributes[]" value="Defense">
-                            <label for="attribute-defense">Defense</label>
-                        </div>
-                        <div class="item-list">
-                            <input type="checkbox" id="attribute-special-attack" name="attributes[]" value="Sp. Attack">
-                            <label for="attribute-special-attack">Sp. Attack</label>
-                        </div>
-                        <div class="item-list">
-                            <input type="checkbox" id="attribute-special-defense" name="attributes[]" value="Sp. Defense">
-                            <label for="attribute-special-defense">Sp. Defense</label>
-                        </div>
-                        <div class="item-list">
-                            <input type="checkbox" id="attribute-speed" name="attributes[]" value="Speed">
-                            <label for="attribute-speed">Speed</label>
-                        </div>
-                        <div class="item-list">
-                            <input type="checkbox" id="attribute-total" name="attributes[]" value="Total">
-                            <label for="attribute-total">Total</label>
-                        </div>
-
+            <fieldset>
+                <legend>Select the Generations</legend>
+                <div class="scrollable-list">
+                    <div class="item-list">
+                        <input type="checkbox" id="select-all-gen" name="select-all-gen" value="select-all-gen">
+                        <label for="select-all-gen">All Gen's</label>
                     </div>
-                </fieldset>
+                    <div class="item-list">
+                        <input type="checkbox" id="gen-I" name="gen[]" value="generation-i">
+                        <label for="gen-I">Gen I</label>
+                    </div>
+                    <div class="item-list">
+                        <input type="checkbox" id="gen-II" name="gen[]" value="generation-ii">
+                        <label for="gen-II">Gen II</label>
+                    </div>
+                    <div class="item-list">
+                        <input type="checkbox" id="gen-III" name="gen[]" value="generation-iii">
+                        <label for="gen-III">Gen III</label>
+                    </div>
+                    <div class="item-list">
+                        <input type="checkbox" id="gen-IV" name="gen[]" value="generation-iv">
+                        <label for="gen-IV">Gen IV</label>
+                    </div>
+                    <div class="item-list">
+                        <input type="checkbox" id="gen-V" name="gen[]" value="generation-v">
+                        <label for="gen-V">Gen V</label>
+                    </div>
+                    <div class="item-list">
+                        <input type="checkbox" id="gen-VI" name="gen[]" value="generation-vi">
+                        <label for="gen-VI">Gen VI</label>
+                    </div>
+                    <div class="item-list">
+                        <input type="checkbox" id="gen-VII" name="gen[]" value="generation-vii">
+                        <label for="gen-VII">Gen VII</label>
+                    </div>
+                    <div class="item-list">
+                        <input type="checkbox" id="gen-VIII" name="gen[]" value="generation-viii">
+                        <label for="gen-VIII">Gen VIII</label>
+                    </div>
+                </div>
+            </fieldset>
+
+        <fieldset>
+            <legend>Select the Attributes</legend>
+            <div class="scrollable-list">
+                <div class="item-list">
+                    <input type="checkbox" id="select-all-attributes" name="select-all-attributes" value="select-all-attributes">
+                    <label for="select-all-attributes">All Attributes</label>
+                </div>
+                <div class="item-list">
+                    <input type="checkbox" id="attribute-height" name="attributes[]" value="Height (cm)">
+                    <label for="attribute-height">Height (cm)</label>
+                </div>
+                <div class="item-list">
+                    <input type="checkbox" id="attribute-weight" name="attributes[]" value="Weight (Kg)">
+                    <label for="attribute-weight">Weight (Kg)</label>
+                </div>
+                <div class="item-list">
+                    <input type="checkbox" id="attribute-hp" name="attributes[]" value="HP">
+                    <label for="attribute-hp">HP</label>
+                </div>
+                <div class="item-list">
+                    <input type="checkbox" id="attribute-attack" name="attributes[]" value="Attack">
+                    <label for="attribute-attack">Attack</label>
+                </div>
+                <div class="item-list">
+                    <input type="checkbox" id="attribute-defense" name="attributes[]" value="Defense">
+                    <label for="attribute-defense">Defense</label>
+                </div>
+                <div class="item-list">
+                    <input type="checkbox" id="attribute-special-attack" name="attributes[]" value="Sp. Attack">
+                    <label for="attribute-special-attack">Sp. Attack</label>
+                </div>
+                <div class="item-list">
+                    <input type="checkbox" id="attribute-special-defense" name="attributes[]" value="Sp. Defense">
+                    <label for="attribute-special-defense">Sp. Defense</label>
+                </div>
+                <div class="item-list">
+                    <input type="checkbox" id="attribute-speed" name="attributes[]" value="Speed">
+                    <label for="attribute-speed">Speed</label>
+                </div>
+                <div class="item-list">
+                    <input type="checkbox" id="attribute-total" name="attributes[]" value="Total">
+                    <label for="attribute-total">Total</label>
+                </div>
+
             </div>
-                <input id = 'submit_forms' type="submit" value="Play">
-            </form>
-        </div>
+        </fieldset>
+        <input type="submit" value="Play">
+        </form>
+
     </main>
 
     <script src="{{ url_for('static', filename='js/higher_lower_home.js') }}"></script>

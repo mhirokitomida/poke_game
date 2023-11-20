@@ -54,7 +54,7 @@ def start_game():
     generation = session.get('gen', all_generations)
     # Filter the database based on the generations selected by the user
     data = data_full.query('generation in @generation')
-    print(data.tail())
+
     # Draw Pokemon 1
     pkmn_1 = sort_pkmn(data, random_stat)
     # Draw Pokemon 2

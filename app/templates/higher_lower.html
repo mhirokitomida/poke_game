@@ -19,11 +19,6 @@
 </header>
 
 <main class="main_content">
-    <h1 class="main_content_title" id="stat">{{ stat }}</h1>
-    <div class="score-container">
-        <h2 class="main_content_title" id="score">Score: 0</h2>
-        <h2 class="main_content_title" id="high_score">High Score: {{high_score_hl}}</h2>
-    </div>
 
     <section class="pokemon_battle">
         <div class="pokemon_hl" id="pkmn-1"> 
@@ -31,7 +26,13 @@
             <img src="{{ pkmn_1.sprite }}" alt="Pokemon 1" data-stat="{{ pkmn_1.stat }}">
             <h3 class="main_content_title" id="stat-pkmn-1"></h3>
         </div>
-        <h2 id="vs">VS</h2> 
+        <div> 
+            <h1 class="main_content_title" id="stat">{{ stat }}</h1>
+            <div class="score-container">
+                <h2 class="main_content_text" id="score">Score: 0</h2>
+                <h2 class="main_content_text" id="high_score">High Score: {{high_score_hl}}</h2>
+            </div>
+        </div>
         <div class="pokemon_hl" id="pkmn-2"> 
             <h2 class="main_content_title">{{ pkmn_2.name }}</h2>
             <img src="{{ pkmn_2.sprite }}" alt="Pokemon 2" data-stat="{{ pkmn_2.stat }}">

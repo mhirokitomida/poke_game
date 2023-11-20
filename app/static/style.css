@@ -12,6 +12,7 @@
     --secondary-color: #F6F6F6;
     --tertiary-color: #22D4FD;
     --hover-color: #A40000;
+    --hover-color-2: #c0c0c0;
     --yellow-color: #FFCB05;
     --blue-color: #3D7DCA;
     --navy-blue-color: #003A70;
@@ -24,16 +25,14 @@
     --primary-font: 'Pokemon Solid', sans-serif;
     --secondary-font: 'Pokemon Hollow', sans-serif;
     --tertiary-font: 'Krona One', sans-serif;
-
-    --default-font-size-title: 2rem;
-    --default-font-size-text: 1.5rem;
-    --default-padding: 1rem;
-    --default-gap: 2rem;
 }
 
 body{
-    box-sizing: border-box;
     background-color: var(--black-color);
     color: var(--secondary-color);
     font-size: 16px;
+}
+
+* {
+    box-sizing: border-box;
 }

@@ -1,73 +1,77 @@
 .pokemon_wtp{
     display: flex;
-    gap: 20rem;
-    
+    gap: 2rem;
 }
-
-#generation-filter{
-    font-size: 3rem;
-}
-
-#global-filter{
-    font-size: 3rem;
-}
-
-#global-filter::placeholder {
-    all: initial;
-    color: rgba(0, 0, 0, 0.3); 
-    font-size: 3rem;
-  }
   
 .guess_pkmn{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: 40rem;
+    width: auto;
     background-size: 100% 100%;
     background-image: url("/static/assets/pokedex.png");
-    padding: 20rem 5rem;
+    padding: 12rem 5rem 12rem 5rem;
 }
 
-#pokemonImage{
-    height: 100%;
+.guess_pkmn img {
+    width: auto;  
+    height: 100%;  
+}
+
+.forms_guess{
+    display: grid;
+    grid-template-areas:
+        "score filter_gen"
+        "score filter_txt"
+        "button list_pkmn";
+    grid-template-rows: repeat(2, auto) 1fr; 
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 5rem;
+    row-gap: 2rem;
+}
+
+.forms_guess div:nth-of-type(1){
+    grid-area: score;
+    align-self: start;
+    margin-top: 0;
+}
+
+.forms_guess select{
+    grid-area: filter_gen;
+    font-size: 2rem;
+}
+
+.forms_guess input[type="text"]{
+    grid-area: filter_txt;
+    font-size: 2rem;
+}
+
+#global-filter::placeholder {
+    all: initial;
+    color: rgba(0, 0, 0, 0.3); 
+    font-size: 2rem;
+  }
+
+.forms_guess .scrollable-list{
+    grid-area: list_pkmn;
+    font-size: 2rem;
+    height: 25rem;
     width: auto;
 }
 
-.submit-container {
-    display: flex;
-    justify-content: center; 
-    padding: 10px 0; 
-}
-
-.guess_panel{
-    display: flex;
-}
-
-#submit_whos_that_pokemon {
-    font-size: 3rem;
-    width: auto; 
-}
-
-#pokemon-list{
-    height: 40rem;
-    width: 30rem;
-    font-size: 3rem;
+.forms_guess input[type="submit"]{
+    grid-area: button;
+    font-size: 2rem;
+    align-self: end;
+    margin-bottom: 1rem;
 }
   
-.guess_pkmn_list {
-    display: flex;
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    height: 100%; 
-    gap: 3rem;
-  }
-
 .custom-radio input[type='radio'] {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-  
     width: 1.5rem;
     height: 1.5rem;
     border: 2px solid #000000;
@@ -92,5 +96,5 @@
   }
 
   .custom-radio {
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
   }
