@@ -37,16 +37,17 @@
 }
 
 .main_content_links{
+    max-width: 100%;
+    max-height: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    gap: 6rem;
+    gap: 4rem;
+    flex-wrap: wrap;
 }
 
 .main_content_links_item{
     background-color: var(--red-color);
-    display: flex;
-    justify-content: center;
     border: 0.5rem solid var(--black-color);
     width: 25rem;
     text-align: center;
