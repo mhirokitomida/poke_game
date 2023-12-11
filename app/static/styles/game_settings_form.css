@@ -89,11 +89,11 @@
     margin-bottom: 2rem;
 }
 
-input[type="checkbox"] {
+.item-list input[type="checkbox"] {
     display: none;
 }
 
-input[type="checkbox"] + label::before {
+.item-list input[type="checkbox"] + label::before {
     content: "";
     display: inline-block;
     width: 2rem;   
@@ -104,7 +104,7 @@ input[type="checkbox"] + label::before {
     cursor: pointer; 
 }
 
-input[type="checkbox"]:checked + label::before {
+.item-list input[type="checkbox"]:checked + label::before {
     content: "\2713"; 
     line-height: 1rem; 
     font-size: 2rem;  

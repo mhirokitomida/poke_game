@@ -7,6 +7,20 @@
             <p class="header_menu_link header_menu_link_selected">Higher Lower Game</p>
             <a class="header_menu_link" href="{{ url_for('whos_that_pkmn.home') }}">Who's that Pokémon</a>
         </div>
+        <div class = "nav_menu_drop_list">
+            <input type="checkbox" id="menu" class="container__button">
+            <label for="menu" class="container__label">
+                <span class="header_menu_icon container__imagem"></span>
+            </label>
+            <ul class="lista-menu">
+                <li class="lista-menu__item">
+                    <a class="header_menu_link" href="{{ url_for('home.index') }}">Home</a>
+                </li>
+                <li class="lista-menu__item">
+                    <a class="header_menu_link" href="{{ url_for('whos_that_pkmn.home') }}">Who's that Pokémon</a>
+                </li>
+            </ul>
+        </div>
         <div class = "toogle_menu">
             <img src="{{ url_for('static', filename='assets/sun.png') }}" alt="Day Mode" class="toggle_icon">
             <label class="toggle-btn">

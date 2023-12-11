@@ -1,6 +1,8 @@
 .pokemon_wtp{
     display: flex;
     gap: 2rem;
+    justify-content: center;
+    align-items: center;
 }
   
 .guess_pkmn{
